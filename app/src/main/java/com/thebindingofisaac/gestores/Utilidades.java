@@ -1,7 +1,7 @@
 package com.thebindingofisaac.gestores;
 
 /**
- * Created by Dani on 13/11/2017.
+ * Created by Jordan on 23/08/2015.
  */
 public class Utilidades {
 

@@ -147,8 +147,8 @@ public class Jugador extends Modelo {
             velocidadY = 5;
             orientacion = ABAJO;
          } else{
-           // velocidadX = 0;
-            //velocidadY = 0;
+            velocidadX = 0;
+            velocidadY = 0;
         }
     }
 
