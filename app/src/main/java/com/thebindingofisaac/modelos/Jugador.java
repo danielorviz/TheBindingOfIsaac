@@ -135,20 +135,20 @@ public class Jugador extends Modelo {
 
 
         if (orientacion ==1) {
-            velocidadX = -5;
-            orientacion = IZQUIERDA;
+            velocidadY = -5;
+            orientacion = ARRIBA;
         } else if (orientacionPad == -1 ){
             velocidadX = 5;
             orientacion = DERECHA;
         }else if(orientacionPad == 2){
-            velocidadY = -5;
-            orientacion = ARRIBA;
+            velocidadX = -5;
+            orientacion = IZQUIERDA;
         }else if ( orientacionPad  == -2 ){
             velocidadY = 5;
             orientacion = ABAJO;
          } else{
-            velocidadX = 0;
-            velocidadY = 0;
+           // velocidadX = 0;
+            //velocidadY = 0;
         }
     }
 

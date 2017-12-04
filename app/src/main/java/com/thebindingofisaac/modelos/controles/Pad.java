@@ -56,5 +56,10 @@ public class Pad extends Modelo {
         }
     }
 
-}
+    public int getOrientacionX(float clickX){
+        return (int) (clickX - x);
+    }
+     public int getOrientacionY(float clickY){
+            return (int) (clickY - y);
+}       }
 

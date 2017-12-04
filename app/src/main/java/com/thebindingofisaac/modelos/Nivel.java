@@ -124,6 +124,7 @@ public class Nivel {
             for (DisparoJugador disparoJugador : disparosJugador) {
                 disparoJugador.actualizar(tiempo);
             }
+            jugador.procesarOrdenes(orientacionPad,botonDispararPulsado);
 
             for (Enemigo enemigo : enemigos) {
                 enemigo.actualizar(tiempo);
@@ -193,12 +194,20 @@ public class Nivel {
                 }
             }
 
-
-
+            if(jugador.velocidadX>0){
+                // Hacia arriba
+                //if(mapaTiles[tileXJugadorDerecha][tileYJugadorCentro].tipoDeColision == Tile.PASABLE){
+                    jugador.x= jugador.velocidadX + jugador.x;
+                //}
+            }
         }
 
 
+
     }
+
+
+
 
     public void dibujar (Canvas canvas) {
         if(inicializado) {
