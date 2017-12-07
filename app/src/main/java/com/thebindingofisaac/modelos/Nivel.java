@@ -33,6 +33,7 @@ public class Nivel {
 
     public LinkedList<DisparoJugador> disparosJugador;
     LinkedList<Enemigo> enemigos;
+    private Fondo fondo;
 
 
     public Nivel(Context context, int numeroNivel) throws Exception {
@@ -48,6 +49,11 @@ public class Nivel {
     public void inicializar() throws Exception {
         disparosJugador = new LinkedList<DisparoJugador>();
         enemigos = new LinkedList<Enemigo>();
+
+
+
+        fondo = new Fondo(context,CargadorGraficos.cargarBitmap(context,
+                R.drawable.fondo_gris), 0);
 
 
         inicializarMapaTiles();
@@ -368,6 +374,7 @@ public class Nivel {
 
     public void dibujar (Canvas canvas) {
         if(inicializado) {
+            fondo.dibujar(canvas);
 
             dibujarTiles(canvas);
             for(DisparoJugador disparoJugador: disparosJugador){
@@ -409,11 +416,19 @@ public class Nivel {
             }
 
 
-        if((jugador.y < GameView.pantallaAlto * 0.45)){
+    /*    if((jugador.y < GameView.pantallaAlto * 0.45)){
             scrollEjeY = (int) ((GameView.pantallaAlto-285) - ( GameView.pantallaAlto * 0.45 - jugador.y));
         }else
-            scrollEjeY = (int) (GameView.pantallaAlto-285);
+            scrollEjeY = (int) (GameView.pantallaAlto-285);*/
+        if(jugador.y -scrollEjeY > GameView.pantallaAlto*0.75) {
+            scrollEjeY = (int) (jugador.y - GameView.pantallaAlto * 0.75);
 
+        }
+        if(jugador.y -scrollEjeY < GameView.pantallaAlto*0.2) {
+            if(jugador.y  > altoMapaTiles()*3 ) {
+                scrollEjeY = (int) (jugador.y - GameView.pantallaAlto * 0.2);
+            }
+        }
 
         int derecha = izquierda +
                 GameView.pantallaAncho / Tile.ancho + 1;
