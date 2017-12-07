@@ -20,6 +20,9 @@ public class Jugador extends Modelo {
     public static final String PARADO_IZQUIERDA = "Parado_izquierda";
     public static final String CAMINANDO_DERECHA = "Caminando_derecha";
     public static final String CAMINANDO_IZQUIERDA = "Caminando_izquierda";
+    public static final String CAMINANDO_ARRIBA = "Caminando_arriba";
+    public static final String CAMINANDO_ABAJO = "Caminando_abajo";
+
     public static final String DISPARANDO_DERECHA = "disparando_derecha";
     public static final String DISPARANDO_IZQUIERDA = "disparando_izquierda";
     public static final String GOLPEADO_DERECHA = "golpeado_derecha";
@@ -44,7 +47,7 @@ public class Jugador extends Modelo {
     float velocidadY;
 
 
-    int vidas = 3;
+    int vidas = 6;
 
     public boolean disparando;
     public boolean golpeado = false;
@@ -72,39 +75,39 @@ public class Jugador extends Modelo {
 
     public void inicializar (){
         Sprite disparandoDerecha = new Sprite(
-                CargadorGraficos.cargarDrawable(context, R.drawable.playershootright),
+                CargadorGraficos.cargarDrawable(context, R.drawable.animacion_caballero_ataque_derecha),
                 ancho, altura,
-                4, 4, false);
+                4, 6, false);
         sprites.put(DISPARANDO_DERECHA, disparandoDerecha);
 
         Sprite disparandoIzquierda = new Sprite(
-                CargadorGraficos.cargarDrawable(context, R.drawable.playershoot),
+                CargadorGraficos.cargarDrawable(context, R.drawable.animacion_caballero_ataque_izquierda),
                 ancho, altura,
-                4, 4, false);
+                4, 6, false);
         sprites.put(DISPARANDO_IZQUIERDA, disparandoIzquierda);
 
         Sprite caminandoDerecha = new Sprite(
-                CargadorGraficos.cargarDrawable(context, R.drawable.playerrunright),
+                CargadorGraficos.cargarDrawable(context, R.drawable.animacion_caballero_derecha),
                 ancho, altura,
-                4, 8, true);
+                4, 2, true);
         sprites.put(CAMINANDO_DERECHA, caminandoDerecha);
 
         Sprite caminandoIzquierda = new Sprite(
-                CargadorGraficos.cargarDrawable(context, R.drawable.playerrun),
+                CargadorGraficos.cargarDrawable(context, R.drawable.animacion_caballero_izquierda),
                 ancho, altura,
-                4, 8, true);
+                4, 2, true);
         sprites.put(CAMINANDO_IZQUIERDA, caminandoIzquierda);
 
         Sprite paradoDerecha = new Sprite(
-                CargadorGraficos.cargarDrawable(context, R.drawable.playeridleright),
+                CargadorGraficos.cargarDrawable(context, R.drawable.animacion_caballero_quieto),
                 ancho, altura,
-                4, 8, true);
+                4, 2, true);
         sprites.put(PARADO_DERECHA, paradoDerecha);
 
         Sprite paradoIzquierda = new Sprite(
-                CargadorGraficos.cargarDrawable(context, R.drawable.playeridle),
+                CargadorGraficos.cargarDrawable(context, R.drawable.animacion_caballero_quieto),
                 ancho, altura,
-                4, 8, true);
+                4, 2, true);
         sprites.put(PARADO_IZQUIERDA, paradoIzquierda);
 
         Sprite golpeadoDerecha = new Sprite(
@@ -118,6 +121,18 @@ public class Jugador extends Modelo {
                 ancho, altura,
                 4, 4, false);
         sprites.put(GOLPEADO_IZQUIERDA, golpeadoIzquierda);
+
+        Sprite caminandoArriba = new Sprite(
+                CargadorGraficos.cargarDrawable(context, R.drawable.animacion_caballero_arriba),
+                ancho, altura,
+                4, 2, true);
+        sprites.put(CAMINANDO_ARRIBA, caminandoArriba);
+        Sprite caminandoAbajo = new Sprite(
+                CargadorGraficos.cargarDrawable(context, R.drawable.animacion_caballero_abajo),
+                ancho, altura,
+                4, 2, true);
+        sprites.put(CAMINANDO_ABAJO, caminandoAbajo);
+
 
 // animación actual
         sprite = paradoDerecha;
@@ -134,15 +149,15 @@ public class Jugador extends Modelo {
 
 
 
-        if (orientacion ==1) {
-            velocidadY = -5;
-            orientacion = ARRIBA;
+        if (orientacionPad ==1) {
+            velocidadX = -5;
+            orientacion = IZQUIERDA;
         } else if (orientacionPad == -1 ){
             velocidadX = 5;
             orientacion = DERECHA;
         }else if(orientacionPad == 2){
-            velocidadX = -5;
-            orientacion = IZQUIERDA;
+            velocidadY = -5;
+            orientacion = ARRIBA;
         }else if ( orientacionPad  == -2 ){
             velocidadY = 5;
             orientacion = ABAJO;
@@ -181,6 +196,12 @@ public class Jugador extends Modelo {
             } else if (orientacion == IZQUIERDA) {
                 sprite = sprites.get(PARADO_IZQUIERDA);
             }
+        }
+        if (orientacion==ARRIBA) {
+            sprite = sprites.get(CAMINANDO_ARRIBA);
+        }
+        if (orientacion==ABAJO) {
+            sprite = sprites.get(CAMINANDO_ABAJO);
         }
         if (disparando){
             if (orientacion == DERECHA){
@@ -232,6 +253,10 @@ public class Jugador extends Modelo {
     public void actualizarPuntoInicial(double x, double y){
         xInicial = x;
         yInicial = y;
+    }
+
+    public int getVidas() {
+        return vidas;
     }
 
 }

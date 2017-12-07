@@ -17,7 +17,7 @@ import static android.R.attr.x;
 public class BotonDisparar extends Modelo {
 
     public BotonDisparar(Context context) {
-        super(context, GameView.pantallaAncho*0.95 , GameView.pantallaAlto*0.8,
+        super(context, GameView.pantallaAncho*0.85 , GameView.pantallaAlto*0.8,
                 70,70);
 
         imagen = CargadorGraficos.cargarDrawable(context, R.drawable.buttonfire);

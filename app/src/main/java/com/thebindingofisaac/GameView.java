@@ -10,6 +10,8 @@ import android.view.SurfaceView;
 
 
 import com.thebindingofisaac.gestores.GestorAudio;
+import com.thebindingofisaac.modelos.HUD.ContadorVidas;
+import com.thebindingofisaac.modelos.Jugador;
 import com.thebindingofisaac.modelos.Nivel;
 import com.thebindingofisaac.modelos.controles.BotonDisparar;
 import com.thebindingofisaac.modelos.controles.Pad;
@@ -22,6 +24,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback  {
     Context context;
     GameLoop gameloop;
     private BotonDisparar botonDisparar;
+    private ContadorVidas contadorVidas;
 
 
     public static int pantallaAncho;
@@ -166,7 +169,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback  {
         nivel = new Nivel(context,numeroNivel);
         pad = new Pad(context);
         botonDisparar = new BotonDisparar(context);
-
+        contadorVidas = new ContadorVidas(context);
     }
 
     public void actualizar(long tiempo) throws Exception {
@@ -177,6 +180,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback  {
         nivel.dibujar(canvas);
         pad.dibujar(canvas);
         botonDisparar.dibujar(canvas);
+
+        //contadorVidas.actualizarVida(nivel.jugador.getVidas());
+        //contadorVidas.dibujar(canvas);
     }
 
     public void surfaceChanged(SurfaceHolder holder, int format, int width,

@@ -41,8 +41,8 @@ public class Pad extends Modelo {
 
         Log.println(Log.INFO, "EVENTOS_TOUCH", "getOrientacon ClickX = " + clickX + " ClickY = " + clickY);
 
-        double valorCLickY = ((clickY - y )*(clickY - y ) ) / (clickY - y );
-        double valorClickX = ((clickX - x) * (clickX - x)) / (clickX - x);
+        double valorCLickY = Math.abs((clickY - y ));
+        double valorClickX = Math.abs(clickX - x);
 
         if(valorClickX >  valorCLickY) {
             /// SI x -click > 0 -> Izquierda  ///
