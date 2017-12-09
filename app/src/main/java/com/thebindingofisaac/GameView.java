@@ -10,8 +10,7 @@ import android.view.SurfaceView;
 
 
 import com.thebindingofisaac.gestores.GestorAudio;
-import com.thebindingofisaac.modelos.HUD.ContadorVidas;
-import com.thebindingofisaac.modelos.Jugador;
+import com.thebindingofisaac.modelos.HUD.IconoVida;
 import com.thebindingofisaac.modelos.Nivel;
 import com.thebindingofisaac.modelos.controles.BotonDisparar;
 import com.thebindingofisaac.modelos.controles.Pad;
@@ -24,7 +23,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback  {
     Context context;
     GameLoop gameloop;
     private BotonDisparar botonDisparar;
-    private ContadorVidas contadorVidas;
+    private IconoVida[] contadorVidas;
 
 
     public static int pantallaAncho;
@@ -41,6 +40,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback  {
 
         getHolder().addCallback(this);
         setFocusable(true);
+
 
         inicializarGestorAudio(context);
 
@@ -169,11 +169,46 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback  {
         nivel = new Nivel(context,numeroNivel);
         pad = new Pad(context);
         botonDisparar = new BotonDisparar(context);
-        contadorVidas = new ContadorVidas(context);
+        contadorVidas = new IconoVida[3];
+        contadorVidas[0] = new IconoVida(context, GameView.pantallaAncho*0.05,
+                GameView.pantallaAlto*0.1);
+        contadorVidas[1] = new IconoVida(context, GameView.pantallaAncho*0.15,
+                GameView.pantallaAlto*0.1);
+        contadorVidas[2] = new IconoVida(context, GameView.pantallaAncho*0.25,
+                GameView.pantallaAlto*0.1);
+
+        for(int i = 0; contadorVidas.length>i; i++){
+            contadorVidas[i].inicializar();
+        }
     }
 
     public void actualizar(long tiempo) throws Exception {
         nivel.actualizar(tiempo);
+        float auxCorazones= nivel.jugador.getVidas()/3;
+
+        if(auxCorazones==2.5){
+            contadorVidas[2].estado = IconoVida.MITAD;
+        }else if(auxCorazones==2){
+            contadorVidas[2].estado = IconoVida.VACIA;
+        }else if(auxCorazones==1.5){
+            contadorVidas[2].estado = IconoVida.VACIA;
+            contadorVidas[1].estado = IconoVida.MITAD;
+        }else if(auxCorazones==1){
+            contadorVidas[2].estado = IconoVida.VACIA;
+            contadorVidas[1].estado = IconoVida.VACIA;
+        }else if(auxCorazones==1){
+            contadorVidas[2].estado = IconoVida.VACIA;
+            contadorVidas[1].estado = IconoVida.VACIA;
+        }else if(auxCorazones==0.5){
+            contadorVidas[2].estado = IconoVida.VACIA;
+            contadorVidas[1].estado = IconoVida.VACIA;
+            contadorVidas[0].estado = IconoVida.MITAD;
+        }else if(auxCorazones==0){
+            contadorVidas[2].estado = IconoVida.VACIA;
+            contadorVidas[1].estado = IconoVida.VACIA;
+            contadorVidas[0].estado = IconoVida.VACIA;
+        }
+
     }
 
     protected void dibujar(Canvas canvas) {
@@ -181,8 +216,11 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback  {
         pad.dibujar(canvas);
         botonDisparar.dibujar(canvas);
 
-        //contadorVidas.actualizarVida(nivel.jugador.getVidas());
-        //contadorVidas.dibujar(canvas);
+
+
+        for(int i =0; i< contadorVidas.length; i++){
+            contadorVidas[i].dibujar(canvas);
+        }
     }
 
     public void surfaceChanged(SurfaceHolder holder, int format, int width,

@@ -12,9 +12,19 @@ import com.thebindingofisaac.graficos.Sprite;
  */
 
 public class DisparoJugador extends Modelo {
+
+
+
+
+
     private Sprite sprite;
-    public double velocidadX = 10;
-    public double velocidadY = 0.8;
+    public double velocidadX = 5;
+    public double velocidadY = 5;
+
+    public float tVidaMaximo;
+    public float tVida;
+    private float tiempoInicial=0;
+
 
     public int rebotes = 0;
     public int maxRebotes = 2;
@@ -39,7 +49,7 @@ public class DisparoJugador extends Modelo {
                 CargadorGraficos.cargarDrawable(context,
                         R.drawable.animacion_disparo3),
                 ancho, altura,
-                24, 5, true);
+                25, 5, true);
     }
 
     public void rebotar(){
@@ -49,7 +59,11 @@ public class DisparoJugador extends Modelo {
         rebotando = true;
     }
     public void actualizar (long tiempo) {
+
         sprite.actualizar(tiempo);
+        if(tiempoInicial>0) tiempoInicial= tiempo;
+        tVida = tiempo-tiempoInicial;
+
     }
 
     public void dibujar(Canvas canvas){

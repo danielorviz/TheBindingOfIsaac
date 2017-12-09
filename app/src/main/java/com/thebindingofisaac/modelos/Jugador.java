@@ -16,6 +16,10 @@ import java.util.HashMap;
 
 public class Jugador extends Modelo {
 
+
+
+    //ANIMACIONES
+
     public static final String PARADO_DERECHA = "Parado_derecha";
     public static final String PARADO_IZQUIERDA = "Parado_izquierda";
     public static final String CAMINANDO_DERECHA = "Caminando_derecha";
@@ -29,36 +33,40 @@ public class Jugador extends Modelo {
     public static final String GOLPEADO_IZQUIERDA = "golpeado_izquierda";
 
 
-    /// NUEVO //
+    private Sprite sprite;
+    private HashMap<String,Sprite> sprites = new HashMap<String,Sprite>();
 
 
+    /// ORIENTACIONES ///
     public int orientacion;
-
-
     public static final int DERECHA = 1;
     public static final int IZQUIERDA = -1;
-
     public static final int ARRIBA = 2;
     public static final int ABAJO = -2;
 
 
-
+    /// POSICIONAMIENTO ///
     double velocidadX;
     float velocidadY;
-
-
-    int vidas = 6;
-
-    public boolean disparando;
-    public boolean golpeado = false;
-
-    private Sprite sprite;
-    private HashMap<String,Sprite> sprites = new HashMap<String,Sprite>();
 
     double xInicial;
     double yInicial;
 
+
+    /// ESTADO ///
+    int vidas = 6;
+
+    public boolean disparando;
+    public boolean golpeado = false;
     int msInmunidad = 2;
+
+    public static final String ARMA_DISTANCIA = "distancia";
+    public static final String ARMA_MELEE = "melee";
+
+    public String armaActual;
+
+
+
 
     public Jugador(Context context, double xInicial, double yInicial) {
         super(context, 0, 0, 40, 40);
@@ -69,6 +77,8 @@ public class Jugador extends Modelo {
 
         this.x =  this.xInicial;
         this.y =  this.yInicial;
+
+        armaActual = Jugador.ARMA_MELEE;
 
         inicializar();
     }

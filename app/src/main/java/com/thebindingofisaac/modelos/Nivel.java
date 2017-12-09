@@ -15,6 +15,7 @@ import java.io.InputStreamReader;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 
 public class Nivel {
     public static int scrollEjeX = 0;
@@ -109,16 +110,25 @@ public class Nivel {
                 int yCentroAbajoTile = y * Tile.altura + Tile.altura;
                 jugador = new Jugador(context, xCentroAbajoTile, yCentroAbajoTile);
 
-                return new Tile(CargadorGraficos.cargarDrawable(context, R.drawable.platform_dos)
+                return new Tile(CargadorGraficos.cargarDrawable(context, R.drawable.medievaltile_263)
                         , Tile.PASABLE);
             case '.':
                 // en blanco, sin textura
-                return new Tile(CargadorGraficos.cargarDrawable(context, R.drawable.platform_dos)
-                        , Tile.PASABLE);
+                Random rand = new Random();
+                int n = rand.nextInt(2);
+                if(n>1)
+                    return new Tile(CargadorGraficos.cargarDrawable(context, R.drawable.medievaltile_115)
+                            , Tile.PASABLE);
+                else
+                    return new Tile(CargadorGraficos.cargarDrawable(context, R.drawable.medievaltile_002)
+                            , Tile.PASABLE);
+            case '$':
+                return new Tile(CargadorGraficos.cargarDrawable(context, R.drawable.medievaltile_112)
+                        , Tile.SOLIDO);
             case '#':
                 // bloque de musgo, no se puede pasar
                 return new Tile(
-                        CargadorGraficos.cargarDrawable(context, R.drawable.musgo)
+                        CargadorGraficos.cargarDrawable(context, R.drawable.medievaltile_019)
                         , Tile.SOLIDO);
             default:
                 //cualquier otro caso
@@ -131,6 +141,7 @@ public class Nivel {
         if (inicializado) {
             for (DisparoJugador disparoJugador : disparosJugador) {
                 disparoJugador.actualizar(tiempo);
+
             }
             jugador.procesarOrdenes(orientacionPad,botonDispararPulsado);
 
@@ -139,7 +150,15 @@ public class Nivel {
             }
 
             if (botonDispararPulsado) {
-                disparosJugador.add(new DisparoJugador(context, jugador.x, jugador.y, jugador.orientacion));
+                DisparoJugador ataque  = new DisparoJugador(context, jugador.x, jugador.y, jugador.orientacion);
+                if(jugador.armaActual== Jugador.ARMA_MELEE){
+                    ataque.tVidaMaximo=1f;
+                }else{
+                    ataque.tVidaMaximo=20f;
+                }
+
+                disparosJugador.add(ataque);
+
                 botonDispararPulsado = false;
             }
 
@@ -159,7 +178,7 @@ public class Nivel {
                 = (int) (jugador.x - (jugador.ancho / 2 - 1)) / Tile.ancho;
         int tileXJugadorDerecha
                 = (int) (jugador.x + (jugador.ancho / 2 - 1)) / Tile.ancho;
-        int tileXJugador = (int) (jugador.x - (jugador.ancho/2)) / Tile.ancho;
+        int tileXJugador = (int) (jugador.x - (jugador.ancho / 2)) / Tile.ancho;
         int tileYJugadorInferior
                 = (int) (jugador.y + (jugador.altura / 2 - 1)) / Tile.altura;
         int tileYJugadorCentro
@@ -205,23 +224,23 @@ public class Nivel {
 
 
         }
-        
-        Log.i("posicion","xcentro: "+ tileXJugador+ " ycentro: "+ tileYJugadorCentro+
-        " xder: "+ tileXJugadorDerecha+ " xizq: "+ tileXJugadorIzquierda
-        + "ysup: "+ tileYJugadorSuperior+ " yinf: "+ tileYJugadorInferior);
+
+        Log.i("posicion", "xcentro: " + tileXJugador + " ycentro: " + tileYJugadorCentro +
+                " xder: " + tileXJugadorDerecha + " xizq: " + tileXJugadorIzquierda
+                + "ysup: " + tileYJugadorSuperior + " yinf: " + tileYJugadorInferior);
 
 
         // Hacia arriba
-        if(jugador.velocidadY < 0){
+        if (jugador.velocidadY < 0) {
             // Tile superior PASABLE
             // Podemos seguir moviendo hacia arriba
-            if (tileYJugadorSuperior-1 >= 0 &&
-                    mapaTiles[tileXJugadorIzquierda][tileYJugadorSuperior-1].tipoDeColision
+            if (tileYJugadorSuperior - 1 >= 0 &&
+                    mapaTiles[tileXJugadorIzquierda][tileYJugadorSuperior - 1].tipoDeColision
                             == Tile.PASABLE
-                    && mapaTiles[tileXJugadorDerecha][tileYJugadorSuperior-1].tipoDeColision
-                    == Tile.PASABLE){
+                    && mapaTiles[tileXJugadorDerecha][tileYJugadorSuperior - 1].tipoDeColision
+                    == Tile.PASABLE) {
 
-                jugador.y +=  jugador.velocidadY;
+                jugador.y += jugador.velocidadY;
 
                 // Tile superior != de PASABLE
                 // O es un tile SOLIDO, o es el TECHO del mapa
@@ -229,10 +248,10 @@ public class Nivel {
 
                 // Si en el propio tile del jugador queda espacio para
                 // subir más, subo
-                int TileJugadorBordeSuperior = (tileYJugadorSuperior)*Tile.altura;
-                double distanciaY =  (jugador.y - jugador.altura/2) - TileJugadorBordeSuperior;
+                int TileJugadorBordeSuperior = (tileYJugadorSuperior) * Tile.altura;
+                double distanciaY = (jugador.y - jugador.altura / 2) - TileJugadorBordeSuperior;
 
-                if( distanciaY  > 0) {
+                if (distanciaY > 0) {
                     jugador.y += Utilidades.proximoACero(-distanciaY, jugador.velocidadY);
 
                 }
@@ -323,7 +342,7 @@ public class Nivel {
             }
         }
 // izquierda
-        if (jugador.velocidadX <= 0 && jugador.orientacion==Jugador.IZQUIERDA) {
+        if (jugador.velocidadX <= 0 && jugador.orientacion == Jugador.IZQUIERDA) {
             // Tengo un tile detrás y es PASABLE
             // El tile de delante está dentro del Nivel
             if (tileXJugadorIzquierda - 1 >= 0 &&
@@ -337,7 +356,7 @@ public class Nivel {
                     mapaTiles[tileXJugadorIzquierda][tileYJugadorInferior].tipoDeColision ==
                             Tile.PASABLE &&
                     mapaTiles[tileXJugadorIzquierda][tileYJugadorCentro].tipoDeColision ==
-                            Tile.PASABLE&&
+                            Tile.PASABLE &&
                     mapaTiles[tileXJugadorIzquierda][tileYJugadorSuperior].tipoDeColision ==
                             Tile.PASABLE) {
 
@@ -367,6 +386,27 @@ public class Nivel {
             }
         }
 
+        for (Iterator<DisparoJugador> iterator = disparosJugador.iterator(); iterator.hasNext(); ) {
+
+            DisparoJugador disparoJugador = iterator.next();
+            if (disparoJugador.tVidaMaximo <= disparoJugador.tVida) {
+                iterator.remove();
+                break;
+            }
+
+            disparoJugador.x += disparoJugador.velocidadX;
+            disparoJugador.y += disparoJugador.velocidadY;
+
+            for (Enemigo enemigo : enemigos) {
+                if (disparoJugador.colisiona(enemigo)) {
+                    if (enemigo.estado != enemigo.INACTIVO)
+                        enemigo.destruir();
+
+                    iterator.remove();
+                    break;
+                }
+            }
+        }
     }
 
 
