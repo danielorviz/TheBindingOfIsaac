@@ -6,6 +6,7 @@ import android.graphics.Canvas;
 
 import com.thebindingofisaac.R;
 import com.thebindingofisaac.gestores.CargadorGraficos;
+import com.thebindingofisaac.global.TipoArmas;
 import com.thebindingofisaac.graficos.Sprite;
 
 import java.util.HashMap;
@@ -29,9 +30,14 @@ public class Jugador extends Modelo {
 
     public static final String DISPARANDO_DERECHA = "disparando_derecha";
     public static final String DISPARANDO_IZQUIERDA = "disparando_izquierda";
-    public static final String GOLPEADO_DERECHA = "golpeado_derecha";
-    public static final String GOLPEADO_IZQUIERDA = "golpeado_izquierda";
+    public static final String DISPARANDO_ABAJO = "disparando_abajo";
+    public static final String DISPARANDO_ARRIBA = "disparando_arriba";
 
+
+    // SIN ANIMACIONES PROPIAS
+    //public static final String GOLPEADO_DERECHA = "golpeado_derecha";
+    //public static final String GOLPEADO_IZQUIERDA = "golpeado_izquierda";
+    public static final String CABALLERO_MUERTE= "caballero_muerte";
 
     private Sprite sprite;
     private HashMap<String,Sprite> sprites = new HashMap<String,Sprite>();
@@ -60,8 +66,6 @@ public class Jugador extends Modelo {
     public boolean golpeado = false;
     int msInmunidad = 2;
 
-    public static final String ARMA_DISTANCIA = "distancia";
-    public static final String ARMA_MELEE = "melee";
 
     public String armaActual;
 
@@ -78,7 +82,7 @@ public class Jugador extends Modelo {
         this.x =  this.xInicial;
         this.y =  this.yInicial;
 
-        armaActual = Jugador.ARMA_MELEE;
+        armaActual = TipoArmas.ARMA_MELEE;
 
         inicializar();
     }
@@ -87,14 +91,26 @@ public class Jugador extends Modelo {
         Sprite disparandoDerecha = new Sprite(
                 CargadorGraficos.cargarDrawable(context, R.drawable.animacion_caballero_ataque_derecha),
                 ancho, altura,
-                4, 6, false);
+                6, 6, false);
         sprites.put(DISPARANDO_DERECHA, disparandoDerecha);
 
         Sprite disparandoIzquierda = new Sprite(
                 CargadorGraficos.cargarDrawable(context, R.drawable.animacion_caballero_ataque_izquierda),
                 ancho, altura,
-                4, 6, false);
+                6, 6, false);
         sprites.put(DISPARANDO_IZQUIERDA, disparandoIzquierda);
+
+        Sprite disparandoAbajo = new Sprite(
+                CargadorGraficos.cargarDrawable(context, R.drawable.animacion_caballero_ataque_abajo),
+                ancho, altura,
+                4, 6, false);
+        sprites.put(DISPARANDO_ABAJO, disparandoAbajo);
+
+        Sprite disparandoArriba = new Sprite(
+                CargadorGraficos.cargarDrawable(context, R.drawable.animacion_caballero_ataque_arriba),
+                ancho, altura,
+                4, 6, false);
+        sprites.put(DISPARANDO_ARRIBA, disparandoArriba);
 
         Sprite caminandoDerecha = new Sprite(
                 CargadorGraficos.cargarDrawable(context, R.drawable.animacion_caballero_derecha),
@@ -120,17 +136,17 @@ public class Jugador extends Modelo {
                 4, 2, true);
         sprites.put(PARADO_IZQUIERDA, paradoIzquierda);
 
-        Sprite golpeadoDerecha = new Sprite(
-                CargadorGraficos.cargarDrawable(context, R.drawable.playerimpactright),
-                ancho, altura,
-                4, 4, false);
-        sprites.put(GOLPEADO_DERECHA, golpeadoDerecha);
-
-        Sprite golpeadoIzquierda = new Sprite(
-                CargadorGraficos.cargarDrawable(context, R.drawable.playerimpact),
-                ancho, altura,
-                4, 4, false);
-        sprites.put(GOLPEADO_IZQUIERDA, golpeadoIzquierda);
+//        Sprite golpeadoDerecha = new Sprite(
+//                CargadorGraficos.cargarDrawable(context, R.drawable.playerimpactright),
+//                ancho, altura,
+//                4, 4, false);
+//        sprites.put(GOLPEADO_DERECHA, golpeadoDerecha);
+//
+//               Sprite golpeadoIzquierda = new Sprite(
+//                CargadorGraficos.cargarDrawable(context, R.drawable.playerimpact),
+//                ancho, altura,
+//                4, 4, false);
+//        sprites.put(GOLPEADO_IZQUIERDA, golpeadoIzquierda);
 
         Sprite caminandoArriba = new Sprite(
                 CargadorGraficos.cargarDrawable(context, R.drawable.animacion_caballero_arriba),
@@ -143,6 +159,11 @@ public class Jugador extends Modelo {
                 4, 2, true);
         sprites.put(CAMINANDO_ABAJO, caminandoAbajo);
 
+        Sprite caballerMuerte = new Sprite(
+                CargadorGraficos.cargarDrawable(context, R.drawable.animacion_caballero_muerte),
+                ancho, altura,
+                12, 6, false);
+        sprites.put(CABALLERO_MUERTE, caballerMuerte);
 
 // animación actual
         sprite = paradoDerecha;
@@ -155,6 +176,8 @@ public class Jugador extends Modelo {
             // preparar los sprites, no son bucles hay que reiniciarlos
             sprites.get(DISPARANDO_DERECHA).setFrameActual(0);
             sprites.get(DISPARANDO_IZQUIERDA).setFrameActual(0);
+            sprites.get(DISPARANDO_ARRIBA).setFrameActual(0);
+            sprites.get(DISPARANDO_ABAJO).setFrameActual(0);
         }
 
 
@@ -172,6 +195,7 @@ public class Jugador extends Modelo {
             velocidadY = 5;
             orientacion = ABAJO;
          } else{
+            orientacion= ABAJO;
             velocidadX = 0;
             velocidadY = 0;
         }
@@ -192,40 +216,47 @@ public class Jugador extends Modelo {
 
         if(disparando && finSprite){
             disparando = false;
-        }
 
-        if (velocidadX > 0){
-            sprite = sprites.get(CAMINANDO_DERECHA);
         }
-        if (velocidadX < 0 ){
-            sprite = sprites.get(CAMINANDO_IZQUIERDA);
-        }
-        if (velocidadX == 0 ){
-            if (orientacion == DERECHA){
-                sprite = sprites.get(PARADO_DERECHA);
-            } else if (orientacion == IZQUIERDA) {
-                sprite = sprites.get(PARADO_IZQUIERDA);
+        if(disparando==false) {
+            if (velocidadX > 0) {
+                sprite = sprites.get(CAMINANDO_DERECHA);
+            }
+            if (velocidadX < 0) {
+                sprite = sprites.get(CAMINANDO_IZQUIERDA);
+            }
+            if (velocidadX == 0) {
+                if (orientacion == DERECHA) {
+                    sprite = sprites.get(PARADO_DERECHA);
+                } else if (orientacion == IZQUIERDA) {
+                    sprite = sprites.get(PARADO_IZQUIERDA);
+                }
+            }
+            if (orientacion == ARRIBA) {
+                sprite = sprites.get(CAMINANDO_ARRIBA);
+            } else if (orientacion == ABAJO) {
+                sprite = sprites.get(CAMINANDO_ABAJO);
             }
         }
-        if (orientacion==ARRIBA) {
-            sprite = sprites.get(CAMINANDO_ARRIBA);
-        }
-        if (orientacion==ABAJO) {
-            sprite = sprites.get(CAMINANDO_ABAJO);
-        }
-        if (disparando){
-            if (orientacion == DERECHA){
-                sprite = sprites.get(DISPARANDO_DERECHA);
-            } else if (orientacion == IZQUIERDA) {
-                sprite = sprites.get(DISPARANDO_IZQUIERDA);
+            if (disparando) {
+                if (orientacion == DERECHA) {
+                    sprite = sprites.get(DISPARANDO_DERECHA);
+                } else if (orientacion == IZQUIERDA) {
+                    sprite = sprites.get(DISPARANDO_IZQUIERDA);
+                } else if (orientacion == ARRIBA) {
+                    sprite = sprites.get(DISPARANDO_ARRIBA);
+                }else if (orientacion == ABAJO) {
+                    sprite = sprites.get(DISPARANDO_ABAJO);
+                }
             }
-        }
 
         if (golpeado){
+            sprite = sprites.get(CABALLERO_MUERTE);
             if (orientacion == DERECHA){
-                sprite = sprites.get(GOLPEADO_DERECHA);
+             //   sprite = sprites.get(GOLPEADO_DERECHA);
+
             } else if (orientacion == IZQUIERDA) {
-                sprite = sprites.get(GOLPEADO_IZQUIERDA);
+             //   sprite = sprites.get(GOLPEADO_IZQUIERDA);
             }
         }
 
@@ -238,7 +269,7 @@ public class Jugador extends Modelo {
 
 
     public void restablecerPosicionInicial(){
-        vidas = 3;
+        vidas = 6;
         golpeado = false;
         msInmunidad = 0;
 
@@ -251,11 +282,11 @@ public class Jugador extends Modelo {
         if (msInmunidad <= 0) {
             if (vidas > 0) {
                 vidas--;
-                msInmunidad = 3000;
+                msInmunidad = 2000;
                 golpeado = true;
                 // Reiniciar animaciones que no son bucle
-                sprites.get(GOLPEADO_IZQUIERDA).setFrameActual(0);
-                sprites.get(GOLPEADO_DERECHA).setFrameActual(0);
+                sprites.get(CABALLERO_MUERTE).setFrameActual(0);
+                //sprites.get(GOLPEADO_DERECHA).setFrameActual(0);
             }
         }
         return vidas;

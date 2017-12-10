@@ -184,29 +184,30 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback  {
 
     public void actualizar(long tiempo) throws Exception {
         nivel.actualizar(tiempo);
-        float auxCorazones= nivel.jugador.getVidas()/3;
 
-        if(auxCorazones==2.5){
+        int vidas =  nivel.jugador.getVidas();
+        if(vidas==5){
             contadorVidas[2].estado = IconoVida.MITAD;
-        }else if(auxCorazones==2){
+        }else if(vidas==4){
             contadorVidas[2].estado = IconoVida.VACIA;
-        }else if(auxCorazones==1.5){
+        }else if(vidas==3){
             contadorVidas[2].estado = IconoVida.VACIA;
             contadorVidas[1].estado = IconoVida.MITAD;
-        }else if(auxCorazones==1){
+        }else if(vidas==2){
             contadorVidas[2].estado = IconoVida.VACIA;
             contadorVidas[1].estado = IconoVida.VACIA;
-        }else if(auxCorazones==1){
-            contadorVidas[2].estado = IconoVida.VACIA;
-            contadorVidas[1].estado = IconoVida.VACIA;
-        }else if(auxCorazones==0.5){
+        }else if(vidas==1){
             contadorVidas[2].estado = IconoVida.VACIA;
             contadorVidas[1].estado = IconoVida.VACIA;
             contadorVidas[0].estado = IconoVida.MITAD;
-        }else if(auxCorazones==0){
+        }else if(vidas==0){
             contadorVidas[2].estado = IconoVida.VACIA;
             contadorVidas[1].estado = IconoVida.VACIA;
             contadorVidas[0].estado = IconoVida.VACIA;
+        }
+        for(int i =0; i<contadorVidas.length; i++) {
+            contadorVidas[i].actualizar(tiempo);
+            if(vidas==6) contadorVidas[i].estado = IconoVida.COMPLETA;
         }
 
     }
@@ -216,9 +217,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback  {
         pad.dibujar(canvas);
         botonDisparar.dibujar(canvas);
 
-
-
         for(int i =0; i< contadorVidas.length; i++){
+
             contadorVidas[i].dibujar(canvas);
         }
     }

@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 
 import com.thebindingofisaac.R;
 import com.thebindingofisaac.gestores.CargadorGraficos;
+import com.thebindingofisaac.global.TipoArmas;
 import com.thebindingofisaac.graficos.Sprite;
 
 /**
@@ -12,10 +13,6 @@ import com.thebindingofisaac.graficos.Sprite;
  */
 
 public class DisparoJugador extends Modelo {
-
-
-
-
 
     private Sprite sprite;
     public double velocidadX = 5;
@@ -25,12 +22,13 @@ public class DisparoJugador extends Modelo {
     public float tVida;
     private float tiempoInicial=0;
 
+    String tipoArma;
 
     public int rebotes = 0;
     public int maxRebotes = 2;
     public boolean rebotando;
 
-    public DisparoJugador(Context context, double xInicial, double yInicial, int orientacion) {
+    public DisparoJugador(Context context, double xInicial, double yInicial, int orientacion, String tipoArma) {
         super(context, xInicial, yInicial, 35, 35);
 
         if (orientacion == Jugador.IZQUIERDA)
@@ -41,6 +39,9 @@ public class DisparoJugador extends Modelo {
         cArriba = 6;
         cAbajo = 6;
 
+        this.tipoArma=tipoArma;
+
+
         inicializar();
     }
 
@@ -50,6 +51,11 @@ public class DisparoJugador extends Modelo {
                         R.drawable.animacion_disparo3),
                 ancho, altura,
                 25, 5, true);
+
+        if(tipoArma== TipoArmas.ARMA_MELEE){
+            tVidaMaximo = 2f;
+        }else
+            tVidaMaximo= 10f;
     }
 
     public void rebotar(){
@@ -67,7 +73,8 @@ public class DisparoJugador extends Modelo {
     }
 
     public void dibujar(Canvas canvas){
-        sprite.dibujarSprite(canvas, (int) x - Nivel.scrollEjeX, (int) y - Nivel.scrollEjeY);
+        if(tipoArma != TipoArmas.ARMA_MELEE)
+            sprite.dibujarSprite(canvas, (int) x - Nivel.scrollEjeX, (int) y - Nivel.scrollEjeY);
     }
 }
 

@@ -2,6 +2,8 @@ package com.thebindingofisaac.graficos;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.ColorFilter;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
@@ -89,8 +91,11 @@ public class Sprite {
 
     public void dibujarSprite (Canvas canvas, int x, int y, boolean alpha) {
         Paint efectoTransparente = new Paint();
-        if (alpha)
-            efectoTransparente.setAlpha(150);
+
+        if (alpha) {
+            efectoTransparente.setAlpha(200);
+           //  vqbhyt bht efectoTransparente.setColor(Color.BLUE);
+        }
 
         Rect destRect = new Rect(x - modeloAncho/2, y - modeloAltura/2, x
                 + modeloAncho/2, y + modeloAltura/2);

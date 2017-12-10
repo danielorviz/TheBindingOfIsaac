@@ -157,12 +157,17 @@ public class Nivel {
             }
 
             if (botonDispararPulsado) {
-                DisparoJugador ataque  = new DisparoJugador(context, jugador.x, jugador.y, jugador.orientacion);
-                if(jugador.armaActual== Jugador.ARMA_MELEE){
-                    ataque.tVidaMaximo=1f;
-                }else{
-                    ataque.tVidaMaximo=20f;
-                }
+                DisparoJugador ataque = new DisparoJugador(context, jugador.x, jugador.y, jugador.orientacion,jugador.armaActual);
+                if(jugador.orientacion == jugador.ARRIBA)
+                    ataque.y -=40;
+                else if(jugador.orientacion == jugador.ABAJO)
+                    ataque.y +=40;
+                else if(jugador.orientacion == jugador.DERECHA)
+                    ataque.x+=40;
+                else if(jugador.orientacion == jugador.IZQUIERDA)
+                    ataque.x-=40;
+
+
 
                 disparosJugador.add(ataque);
 
