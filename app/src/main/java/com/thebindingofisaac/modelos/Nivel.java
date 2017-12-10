@@ -101,7 +101,14 @@ public class Nivel {
                 int yCentroAbajoTileE = y * Tile.altura + Tile.altura / 2;
                 enemigos.add(new Enemigo(context, xCentroAbajoTileE, yCentroAbajoTileE));
 
-                return new Tile(null, Tile.PASABLE);
+                Random rand = new Random();
+                int m = rand.nextInt(2);
+                if(m>1)
+                    return new Tile(CargadorGraficos.cargarDrawable(context, R.drawable.medievaltile_115)
+                            , Tile.PASABLE);
+                else
+                    return new Tile(CargadorGraficos.cargarDrawable(context, R.drawable.medievaltile_002)
+                            , Tile.PASABLE);
 
             case '1':
                 // Jugador
@@ -114,8 +121,8 @@ public class Nivel {
                         , Tile.PASABLE);
             case '.':
                 // en blanco, sin textura
-                Random rand = new Random();
-                int n = rand.nextInt(2);
+                Random random = new Random();
+                int n = random.nextInt(2);
                 if(n>1)
                     return new Tile(CargadorGraficos.cargarDrawable(context, R.drawable.medievaltile_115)
                             , Tile.PASABLE);
@@ -219,6 +226,140 @@ public class Nivel {
                         scrollEjeX = 0;
                         return;
                     }
+                }
+            }
+
+            if(enemigo.velocidadX > 0){
+                //  Solo una condicion para pasar:  Tile delante libre, el de abajo solido
+                if (tileXEnemigoDerecha + 1 <= anchoMapaTiles() - 1 &&
+                        mapaTiles[tileXEnemigoDerecha + 1][tileYEnemigoInferior].tipoDeColision ==
+                                Tile.PASABLE &&
+                        mapaTiles[tileXEnemigoDerecha + 1][tileYEnemigoCentro].tipoDeColision ==
+                                Tile.PASABLE &&
+                        mapaTiles[tileXEnemigoDerecha + 1][tileYEnemigoSuperior].tipoDeColision ==
+                                Tile.PASABLE &&
+                        mapaTiles[tileXEnemigoDerecha + 1][tileYEnemigoInferior + 1].tipoDeColision ==
+                                Tile.PASABLE) {
+                    enemigo.moverseHaciaJugador(jugador.x,jugador.y);
+                    enemigo.x += enemigo.velocidadX;
+
+
+                    // Sino, me acerco al borde del que estoy
+                } else if (tileXEnemigoDerecha + 1 <= anchoMapaTiles() - 1 ) {
+
+                    int TileEnemigoDerecho = tileXEnemigoDerecha*Tile.ancho + Tile.ancho ;
+                    double distanciaX = TileEnemigoDerecho - (enemigo.x +  enemigo.ancho/2);
+
+                    if( distanciaX  > 0) {
+                        double velocidadNecesaria = Math.min(distanciaX, enemigo.velocidadX);
+                        enemigo.x += velocidadNecesaria;
+                    } else {
+                        enemigo.girarX();
+                    }
+
+                    // No hay Tile, o es el final del mapa
+                } else {
+                    enemigo.girarX();
+                }
+            }
+
+            if(enemigo.velocidadX < 0){
+                // Solo una condición para pasar: Tile izquierda pasable y suelo solido.
+                if (tileXEnemigoIzquierda - 1 >= 0 &&
+                        mapaTiles[tileXEnemigoIzquierda-1][tileYEnemigoInferior].tipoDeColision ==
+                                Tile.PASABLE &&
+                        mapaTiles[tileXEnemigoIzquierda-1][tileYEnemigoCentro].tipoDeColision ==
+                                Tile.PASABLE &&
+                        mapaTiles[tileXEnemigoIzquierda-1][tileYEnemigoSuperior].tipoDeColision ==
+                                Tile.PASABLE &&
+                        mapaTiles[tileXEnemigoIzquierda-1][tileYEnemigoInferior +1].tipoDeColision
+                                == Tile.PASABLE) {
+
+                    enemigo.moverseHaciaJugador(jugador.x,jugador.y);
+                    enemigo.x += enemigo.velocidadX;
+
+                    // Solido / borde del tile acercarse.
+                } else if (tileXEnemigoIzquierda -1  >= 0 ) {
+
+                    int TileEnemigoIzquierdo= tileXEnemigoIzquierda*Tile.ancho ;
+                    double distanciaX =  (enemigo.x -  enemigo.ancho/2) - TileEnemigoIzquierdo;
+
+                    if( distanciaX  > 0) {
+                        double velocidadNecesaria =
+                                Utilidades.proximoACero(-distanciaX, enemigo.velocidadX);
+                        enemigo.x += velocidadNecesaria;
+                    } else {
+                        enemigo.girarX();
+                    }
+                } else {
+                    enemigo.girarX();
+                }
+            }
+
+            if(enemigo.velocidadY < 0) {
+                // Solo una condición para pasar: Tile izquierda pasable y suelo solido.
+                if (tileYEnemigoSuperior - 1 >= 0 &&
+                        mapaTiles[tileXEnemigoIzquierda][tileYEnemigoSuperior-1].tipoDeColision
+                                == Tile.PASABLE
+                        && mapaTiles[tileXEnemigoDerecha][tileYEnemigoSuperior-1].tipoDeColision
+                        == Tile.PASABLE){
+
+                    enemigo.moverseHaciaJugador(jugador.x,jugador.y);
+                    enemigo.y += enemigo.velocidadY;
+
+                    // Solido / borde del tile acercarse.
+                } else{
+
+                    // Si en el propio tile del jugador queda espacio para
+                    // subir más, subo
+                    int TileEnemigoBordeSuperior = (tileYEnemigoSuperior)*Tile.altura;
+                    double distanciaY =  (enemigo.y - enemigo.altura/2) - TileEnemigoBordeSuperior;
+
+                    if( distanciaY  > 0) {
+                        enemigo.y += Utilidades.proximoACero(-distanciaY, enemigo.velocidadY);
+
+                    } else {
+                        enemigo.girarY();
+                    }
+                }
+            }
+            if(enemigo.velocidadY >= 0) {
+                // Solo una condición para pasar: Tile izquierda pasable y suelo solido.
+                if (tileYEnemigoInferior + 1 <= altoMapaTiles() - 1 &&
+
+                        mapaTiles[tileXEnemigoIzquierda - 1][tileYEnemigoSuperior].tipoDeColision ==
+                                Tile.PASABLE &&
+                        mapaTiles[tileXEnemigoIzquierda - 1][tileYEnemigoInferior + 1].tipoDeColision
+                                == Tile.PASABLE) {
+
+                    enemigo.moverseHaciaJugador(jugador.x,jugador.y);
+                    enemigo.y += enemigo.velocidadY;
+
+                    // Solido / borde del tile acercarse.
+                } else if (tileYEnemigoInferior + 1 <= altoMapaTiles() - 1 &&
+                        (mapaTiles[tileXEnemigoIzquierda][tileYEnemigoInferior + 1].tipoDeColision
+                                == Tile.SOLIDO ||
+                                mapaTiles[tileXEnemigoDerecha][tileYEnemigoInferior + 1].tipoDeColision ==
+                                        Tile.SOLIDO)) {
+
+                    // Con que uno de los dos sea solido ya no puede caer
+                    // Si en el propio tile del jugador queda espacio para bajar más, bajo
+                    int TileEnemigoBordeInferior =
+                            tileYJugadorInferior * Tile.altura + Tile.altura;
+                    double distanciaY =
+                            TileEnemigoBordeInferior - (enemigo.y + enemigo.altura / 2);
+
+                    if (distanciaY > 0) {
+                        enemigo.y += Math.min(distanciaY, enemigo.velocidadY);
+
+                    } else {
+                        // Toca suelo, nos aseguramos de que está bien
+                        enemigo.y = TileEnemigoBordeInferior - enemigo.altura / 2;
+                        enemigo.velocidadY = 0;
+                    }
+
+                    // Esta cayendo por debajo del ULTIMO
+                    // va a desaparecer y perder.
                 }
             }
 

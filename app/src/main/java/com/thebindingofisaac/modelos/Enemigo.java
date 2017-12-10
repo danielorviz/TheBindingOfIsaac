@@ -26,7 +26,7 @@ public class Enemigo extends Modelo {
 
 
 
-    public static final String CAMINANDO_DERECHA = "Caminando_derecha";
+    public static final String CAMINANDO_DERECHA = "caminando_derecha";
     public static final String CAMINANDO_IZQUIERDA = "caminando_izquierda";
     public static final String MUERTE_DERECHA = "muerte_derecha";
     public static final String MUERTE_IZQUIERDA = "muerte_izquierda";
@@ -40,7 +40,7 @@ public class Enemigo extends Modelo {
 
 
     public Enemigo(Context context, double xInicial, double yInicial) {
-        super(context, 0, 0, 40, 40);
+        super(context, 0, 0, 49, 30);
 
         this.x = xInicial;
         this.y = yInicial - altura/2;
@@ -48,7 +48,7 @@ public class Enemigo extends Modelo {
         cDerecha = 15;
         cIzquierda = 15;
         cArriba = 20;
-        cAbajo = 20;
+        cAbajo = 10;
 
         inicializar();
     }
@@ -61,15 +61,15 @@ public class Enemigo extends Modelo {
     public void inicializar (){
 
         Sprite caminandoDerecha = new Sprite(
-                CargadorGraficos.cargarDrawable(context, R.drawable.enemyrunright),
+                CargadorGraficos.cargarDrawable(context, R.drawable.enemigo_derecha),
                 ancho, altura,
-                4, 4, true);
+                4, 9, true);
         sprites.put(CAMINANDO_DERECHA, caminandoDerecha);
 
         Sprite caminandoIzquierda = new Sprite(
-                CargadorGraficos.cargarDrawable(context, R.drawable.enemyrun),
+                CargadorGraficos.cargarDrawable(context, R.drawable.enemigo_izquierda),
                 ancho, altura,
-                4, 4, true);
+                4, 9, true);
         sprites.put(CAMINANDO_IZQUIERDA, caminandoIzquierda);
 
         Sprite muerteDerecha = new Sprite(
@@ -121,5 +121,54 @@ public class Enemigo extends Modelo {
 
     public void dibujar(Canvas canvas){
         sprite.dibujarSprite(canvas, (int) x - Nivel.scrollEjeX, (int) y - Nivel.scrollEjeY);
+    }
+
+    public void moverseHaciaJugador(double jugadorX,double jugadorY){
+        if(x < jugadorX && y<jugadorY){
+            if(velocidadX<0){
+                girarX();
+            }
+            if(velocidadY<0){
+                girarY();
+            }
+        }
+        if(x < jugadorX && y>jugadorY){
+            if(velocidadX<0){
+                girarX();
+            }
+            if(velocidadY>0){
+                girarY();
+            }
+        }
+        if(x > jugadorX && y<jugadorY){
+            if(velocidadX>0){
+                girarX();
+            }
+            if(velocidadY<0){
+                girarY();
+            }
+        }
+        if(x > jugadorX && y>jugadorY){
+            if(velocidadX>0){
+                girarX();
+            }
+            if(velocidadY>0){
+                girarY();
+            }
+        }
+        if(x==jugadorX){
+            if(y< jugadorY && velocidadY<0) {
+                girarY();
+            }else if(y> jugadorY && velocidadY>0){
+                girarY();
+            }
+        }
+        if(y==jugadorY){
+            if(x< jugadorX && velocidadX<0) {
+                girarX();
+            }else if(x> jugadorX && velocidadY>0){
+                girarY();
+            }
+        }
     }
 }
