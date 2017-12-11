@@ -159,13 +159,13 @@ public class Nivel {
             if (botonDispararPulsado) {
                 DisparoJugador ataque = new DisparoJugador(context, jugador.x, jugador.y, jugador.orientacion,jugador.armaActual);
                 if(jugador.orientacion == jugador.ARRIBA)
-                    ataque.y -=40;
+                    ataque.y -=35;
                 else if(jugador.orientacion == jugador.ABAJO)
-                    ataque.y +=40;
+                    ataque.y +=35;
                 else if(jugador.orientacion == jugador.DERECHA)
-                    ataque.x+=40;
+                    ataque.x+=35;
                 else if(jugador.orientacion == jugador.IZQUIERDA)
-                    ataque.x-=40;
+                    ataque.x-=35;
 
 
 
@@ -213,7 +213,7 @@ public class Nivel {
                     (int) (enemigo.x - (enemigo.ancho / 2 - 1)) / Tile.ancho;
             int tileXEnemigoDerecha =
                     (int) (enemigo.x + (enemigo.ancho / 2 - 1)) / Tile.ancho;
-
+            int tileXEnemigoCentro = (int) enemigo.x /Tile.ancho;
             int tileYEnemigoInferior =
                     (int) (enemigo.y + (enemigo.altura / 2 - 1)) / Tile.altura;
             int tileYEnemigoCentro =
@@ -242,10 +242,11 @@ public class Nivel {
                         mapaTiles[tileXEnemigoDerecha + 1][tileYEnemigoCentro].tipoDeColision ==
                                 Tile.PASABLE &&
                         mapaTiles[tileXEnemigoDerecha + 1][tileYEnemigoSuperior].tipoDeColision ==
-                                Tile.PASABLE &&
-                        mapaTiles[tileXEnemigoDerecha + 1][tileYEnemigoInferior + 1].tipoDeColision ==
-                                Tile.PASABLE) {
-                    enemigo.moverseHaciaJugador(jugador.x,jugador.y);
+                                Tile.PASABLE
+                       // && mapaTiles[tileXEnemigoDerecha + 1][tileYEnemigoInferior + 1].tipoDeColision == Tile.PASABLE
+                    ) {
+
+                    //enemigo.moverseHaciaJugador(jugador.x,jugador.y);
                     enemigo.x += enemigo.velocidadX;
 
 
@@ -276,11 +277,12 @@ public class Nivel {
                         mapaTiles[tileXEnemigoIzquierda-1][tileYEnemigoCentro].tipoDeColision ==
                                 Tile.PASABLE &&
                         mapaTiles[tileXEnemigoIzquierda-1][tileYEnemigoSuperior].tipoDeColision ==
-                                Tile.PASABLE &&
-                        mapaTiles[tileXEnemigoIzquierda-1][tileYEnemigoInferior +1].tipoDeColision
-                                == Tile.PASABLE) {
+                                Tile.PASABLE
+                        //&& mapaTiles[tileXEnemigoIzquierda-1][tileYEnemigoInferior +1].tipoDeColision == Tile.PASABLE
+                        &&
+                        mapaTiles[tileXEnemigoCentro][tileYEnemigoCentro].tipoDeColision==Tile.PASABLE) {
 
-                    enemigo.moverseHaciaJugador(jugador.x,jugador.y);
+                    //enemigo.moverseHaciaJugador(jugador.x,jugador.y);
                     enemigo.x += enemigo.velocidadX;
 
                     // Solido / borde del tile acercarse.
@@ -307,9 +309,12 @@ public class Nivel {
                         mapaTiles[tileXEnemigoIzquierda][tileYEnemigoSuperior-1].tipoDeColision
                                 == Tile.PASABLE
                         && mapaTiles[tileXEnemigoDerecha][tileYEnemigoSuperior-1].tipoDeColision
-                        == Tile.PASABLE){
-
-                    enemigo.moverseHaciaJugador(jugador.x,jugador.y);
+                        == Tile.PASABLE &&
+                        mapaTiles[tileXEnemigoIzquierda][tileYEnemigoSuperior].tipoDeColision
+                        == Tile.PASABLE
+                        && mapaTiles[tileXEnemigoDerecha][tileYEnemigoSuperior].tipoDeColision
+                        == Tile.PASABLE && mapaTiles[tileXEnemigoCentro][tileYEnemigoSuperior-1].tipoDeColision ==Tile.PASABLE){
+                    //enemigo.moverseHaciaJugador(jugador.x,jugador.y);
                     enemigo.y += enemigo.velocidadY;
 
                     // Solido / borde del tile acercarse.
@@ -329,15 +334,17 @@ public class Nivel {
                 }
             }
             if(enemigo.velocidadY >= 0) {
+                Log.i("ENEMIGO", "Bajando" +mapaTiles[tileXEnemigoIzquierda][tileYEnemigoSuperior+10].tipoDeColision + mapaTiles[tileXEnemigoDerecha][tileYEnemigoSuperior].tipoDeColision);
+
                 // Solo una condición para pasar: Tile izquierda pasable y suelo solido.
-                if (tileYEnemigoInferior + 1 <= altoMapaTiles() - 1 &&
+                if (tileYEnemigoInferior + 1 <= altoMapaTiles() - 1
+                        && mapaTiles[tileXEnemigoIzquierda][tileYEnemigoInferior].tipoDeColision == Tile.PASABLE
+                        && mapaTiles[tileXEnemigoIzquierda][tileYEnemigoInferior].tipoDeColision == Tile.PASABLE
+                        && mapaTiles[tileXEnemigoDerecha][tileYEnemigoInferior].tipoDeColision == Tile.PASABLE
+                        && mapaTiles[tileXEnemigoDerecha][tileYEnemigoInferior].tipoDeColision == Tile.PASABLE
+                        ) {
 
-                        mapaTiles[tileXEnemigoIzquierda - 1][tileYEnemigoSuperior].tipoDeColision ==
-                                Tile.PASABLE &&
-                        mapaTiles[tileXEnemigoIzquierda - 1][tileYEnemigoInferior + 1].tipoDeColision
-                                == Tile.PASABLE) {
-
-                    enemigo.moverseHaciaJugador(jugador.x,jugador.y);
+                    //enemigo.moverseHaciaJugador(jugador.x,jugador.y);
                     enemigo.y += enemigo.velocidadY;
 
                     // Solido / borde del tile acercarse.
@@ -354,21 +361,18 @@ public class Nivel {
                     double distanciaY =
                             TileEnemigoBordeInferior - (enemigo.y + enemigo.altura / 2);
 
-                    if (distanciaY > 0) {
-                        enemigo.y += Math.min(distanciaY, enemigo.velocidadY);
 
-                    } else {
-                        // Toca suelo, nos aseguramos de que está bien
-                        enemigo.y = TileEnemigoBordeInferior - enemigo.altura / 2;
-                        enemigo.velocidadY = 0;
-                    }
 
                     // Esta cayendo por debajo del ULTIMO
                     // va a desaparecer y perder.
                 }
             }
 
+           enemigo.moverseHaciaJugador(jugador.x,jugador.y);
 
+            Log.i("posicion_enemigo", "xcentro: " + tileXEnemigoCentro + " ycentro: " + tileYEnemigoCentro +
+                    " xder: " + tileXEnemigoDerecha + " xizq: " + tileXEnemigoIzquierda
+                    + " ysup: " + tileYEnemigoSuperior + " yinf: " + tileYEnemigoInferior);
         }
 
         Log.i("posicion", "xcentro: " + tileXJugador + " ycentro: " + tileYJugadorCentro +
@@ -376,9 +380,10 @@ public class Nivel {
                 + "ysup: " + tileYJugadorSuperior + " yinf: " + tileYJugadorInferior);
 
 
-        // Hacia arriba
+        // Hacia abajo
         if (jugador.velocidadY < 0) {
             // Tile superior PASABLE
+
             // Podemos seguir moviendo hacia arriba
             if (tileYJugadorSuperior - 1 >= 0 &&
                     mapaTiles[tileXJugadorIzquierda][tileYJugadorSuperior - 1].tipoDeColision
@@ -403,6 +408,7 @@ public class Nivel {
                 }
 
             }
+
         }
 
         // Hacia abajo
