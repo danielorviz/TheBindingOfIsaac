@@ -11,9 +11,6 @@ import com.thebindingofisaac.graficos.Sprite;
 
 import java.util.HashMap;
 
-/**
- * Created by jordansoy on 09/10/2017.
- */
 
 public class Jugador extends Modelo {
 
@@ -66,10 +63,7 @@ public class Jugador extends Modelo {
     public boolean golpeado = false;
     int msInmunidad = 2;
 
-
     public String armaActual;
-
-
 
 
     public Jugador(Context context, double xInicial, double yInicial) {
@@ -195,7 +189,6 @@ public class Jugador extends Modelo {
             velocidadY = 5;
             orientacion = ABAJO;
          } else{
-            orientacion= ABAJO;
             velocidadX = 0;
             velocidadY = 0;
         }
@@ -225,30 +218,31 @@ public class Jugador extends Modelo {
             if (velocidadX < 0) {
                 sprite = sprites.get(CAMINANDO_IZQUIERDA);
             }
-            if (velocidadX == 0) {
+            if (velocidadX == 0 && velocidadY == 0) {
                 if (orientacion == DERECHA) {
                     sprite = sprites.get(PARADO_DERECHA);
                 } else if (orientacion == IZQUIERDA) {
                     sprite = sprites.get(PARADO_IZQUIERDA);
                 }
             }
+
             if (orientacion == ARRIBA) {
                 sprite = sprites.get(CAMINANDO_ARRIBA);
             } else if (orientacion == ABAJO) {
                 sprite = sprites.get(CAMINANDO_ABAJO);
             }
         }
-            if (disparando) {
-                if (orientacion == DERECHA) {
-                    sprite = sprites.get(DISPARANDO_DERECHA);
-                } else if (orientacion == IZQUIERDA) {
-                    sprite = sprites.get(DISPARANDO_IZQUIERDA);
-                } else if (orientacion == ARRIBA) {
-                    sprite = sprites.get(DISPARANDO_ARRIBA);
-                }else if (orientacion == ABAJO) {
-                    sprite = sprites.get(DISPARANDO_ABAJO);
-                }
+        if (disparando) {
+            if (orientacion == DERECHA) {
+                sprite = sprites.get(DISPARANDO_DERECHA);
+            } else if (orientacion == IZQUIERDA) {
+                sprite = sprites.get(DISPARANDO_IZQUIERDA);
+            } else if (orientacion == ARRIBA) {
+                sprite = sprites.get(DISPARANDO_ARRIBA);
+            }else if (orientacion == ABAJO) {
+                sprite = sprites.get(DISPARANDO_ABAJO);
             }
+        }
 
         if (golpeado){
             sprite = sprites.get(CABALLERO_MUERTE);

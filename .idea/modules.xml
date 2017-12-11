@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/TBOI.iml" filepath="$PROJECT_DIR$/TBOI.iml" />
-      <module fileurl="file://D:/Dani/Documents/Proyectos Android Studio/TheBindingOfIsaac/TBOI.iml" filepath="D:/Dani/Documents/Proyectos Android Studio/TheBindingOfIsaac/TBOI.iml" />
+      <module fileurl="file://D:\user\Documents\GitHub\TheBindingOfIsaac\TBOI.iml" filepath="D:\user\Documents\GitHub\TheBindingOfIsaac\TBOI.iml" />
+      <module fileurl="file://D:\Dani\Documents\Proyectos Android Studio\TheBindingOfIsaac\TBOI.iml" filepath="D:\Dani\Documents\Proyectos Android Studio\TheBindingOfIsaac\TBOI.iml" />
       <module fileurl="file://$PROJECT_DIR$/TheBindingOfIsaac.iml" filepath="$PROJECT_DIR$/TheBindingOfIsaac.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>

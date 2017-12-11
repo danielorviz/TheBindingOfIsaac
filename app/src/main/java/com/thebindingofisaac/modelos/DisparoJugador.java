@@ -8,9 +8,6 @@ import com.thebindingofisaac.gestores.CargadorGraficos;
 import com.thebindingofisaac.global.TipoArmas;
 import com.thebindingofisaac.graficos.Sprite;
 
-/**
- * Created by jordansoy on 09/10/2017.
- */
 
 public class DisparoJugador extends Modelo {
 
@@ -22,7 +19,7 @@ public class DisparoJugador extends Modelo {
     public float tVida;
     private float tiempoInicial=0;
 
-    String tipoArma;
+    public String tipoArma;
 
     public int rebotes = 0;
     public int maxRebotes = 2;
@@ -48,7 +45,7 @@ public class DisparoJugador extends Modelo {
     public void inicializar (){
         sprite= new Sprite(
                 CargadorGraficos.cargarDrawable(context,
-                        R.drawable.animacion_disparo3),
+                        R.drawable.animacion_disparo1),
                 ancho, altura,
                 25, 5, true);
 
@@ -69,7 +66,6 @@ public class DisparoJugador extends Modelo {
         sprite.actualizar(tiempo);
         if(tiempoInicial>0) tiempoInicial= tiempo;
         tVida = tiempo-tiempoInicial;
-
     }
 
     public void dibujar(Canvas canvas){
