@@ -20,14 +20,19 @@ public class Cofre extends Modelo {
     public static final int INACTIVO = 0;
     public static final int ELIMINAR = -1;
 
+    public static final int COFRE_MEJORA_DISPARO = 1;
+    public static final int COFRE_VIDA = 2;
+    public int tipoCofre;
+
     private Sprite sprite;
     public final String COFRE_PARADO = "Parado";
     public final String COFRE_COGIDO = "Cogido";
     private HashMap<String,Sprite> sprites = new HashMap<String,Sprite> ();
 
-    public Cofre(Context context, double x, double y){
+    public Cofre(Context context, double x, double y, int tipoCofre){
         super(context, x, y, 50, 50);
         this.y = y - altura/2;
+        this.tipoCofre = tipoCofre;
 
         inicializar();
     }

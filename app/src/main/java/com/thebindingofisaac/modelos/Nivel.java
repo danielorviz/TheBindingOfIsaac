@@ -113,7 +113,12 @@ public class Nivel {
                 // Cofre
                 int xCentroAbajoTileC = x * Tile.ancho + Tile.ancho / 2;
                 int yCentroAbajoTileC = y * Tile.altura + Tile.altura;
-                cofres.add(new Cofre(context, xCentroAbajoTileC, yCentroAbajoTileC));
+                Random r = new Random();
+                int tipo = (r.nextInt(2));
+                if (tipo == 0)
+                    cofres.add(new Cofre(context, xCentroAbajoTileC, yCentroAbajoTileC, Cofre.COFRE_MEJORA_DISPARO));
+                else if (tipo == 1)
+                    cofres.add(new Cofre(context, xCentroAbajoTileC, yCentroAbajoTileC, Cofre.COFRE_VIDA));
 
                 return new Tile(null, Tile.PASABLE);
 
@@ -574,9 +579,14 @@ public class Nivel {
                 iterator.remove();
                 continue;
             }
-            if (jugador.colisiona(cofre) && cofre.estado == Cofre.ACTIVO) {
+            if (jugador.colisiona(cofre) && cofre.estado == Cofre.ACTIVO ) {
                 cofre.destruir();
-                jugador.armaActual = TipoArmas.ARMA_DISTANCIA;
+                if (cofre.tipoCofre == Cofre.COFRE_MEJORA_DISPARO) {
+                    jugador.armaActual = TipoArmas.ARMA_DISTANCIA;
+                }
+                else if (cofre.tipoCofre == Cofre.COFRE_VIDA) {
+                    jugador.vidas++;
+                }
             }
         }
 
