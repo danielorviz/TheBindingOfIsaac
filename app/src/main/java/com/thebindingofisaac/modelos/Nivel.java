@@ -8,6 +8,7 @@ import com.thebindingofisaac.GameView;
 import com.thebindingofisaac.R;
 import com.thebindingofisaac.gestores.CargadorGraficos;
 import com.thebindingofisaac.gestores.Utilidades;
+import com.thebindingofisaac.global.TipoArmas;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -33,7 +34,8 @@ public class Nivel {
 
 
     public LinkedList<DisparoJugador> disparosJugador;
-    LinkedList<Enemigo> enemigos;
+    public LinkedList<Enemigo> enemigos;
+    public List<Cofre> cofres;
     private Fondo fondo;
 
 
@@ -50,8 +52,7 @@ public class Nivel {
     public void inicializar() throws Exception {
         disparosJugador = new LinkedList<DisparoJugador>();
         enemigos = new LinkedList<Enemigo>();
-
-
+        cofres = new LinkedList<Cofre>();
 
         fondo = new Fondo(context,CargadorGraficos.cargarBitmap(context,
                 R.drawable.fondo_gris), 0);
@@ -104,11 +105,17 @@ public class Nivel {
                 Random rand = new Random();
                 int m = rand.nextInt(2);
                 if(m>1)
-                    return new Tile(CargadorGraficos.cargarDrawable(context, R.drawable.medievaltile_115)
-                            , Tile.PASABLE);
+                    return new Tile(CargadorGraficos.cargarDrawable(context, R.drawable.medievaltile_115), Tile.PASABLE);
                 else
-                    return new Tile(CargadorGraficos.cargarDrawable(context, R.drawable.medievaltile_002)
-                            , Tile.PASABLE);
+                    return new Tile(CargadorGraficos.cargarDrawable(context, R.drawable.medievaltile_002), Tile.PASABLE);
+
+            case 'C':
+                // Cofre
+                int xCentroAbajoTileC = x * Tile.ancho + Tile.ancho / 2;
+                int yCentroAbajoTileC = y * Tile.altura + Tile.altura;
+                cofres.add(new Cofre(context, xCentroAbajoTileC, yCentroAbajoTileC));
+
+                return new Tile(null, Tile.PASABLE);
 
             case '1':
                 // Jugador
@@ -156,6 +163,10 @@ public class Nivel {
                 enemigo.actualizar(tiempo);
             }
 
+            for (Cofre cofre : cofres) {
+                cofre.actualizar(tiempo);
+            }
+
             if (botonDispararPulsado) {
                 DisparoJugador ataque = new DisparoJugador(context, jugador.x, jugador.y, jugador.orientacion,jugador.armaActual);
                 if(jugador.orientacion == jugador.ARRIBA)
@@ -166,8 +177,6 @@ public class Nivel {
                     ataque.x+=35;
                 else if(jugador.orientacion == jugador.IZQUIERDA)
                     ataque.x-=35;
-
-
 
                 disparosJugador.add(ataque);
 
@@ -334,7 +343,7 @@ public class Nivel {
                 }
             }
             if(enemigo.velocidadY >= 0) {
-                Log.i("ENEMIGO", "Bajando" +mapaTiles[tileXEnemigoIzquierda][tileYEnemigoSuperior+10].tipoDeColision + mapaTiles[tileXEnemigoDerecha][tileYEnemigoSuperior].tipoDeColision);
+               // Log.i("ENEMIGO", "Bajando" +mapaTiles[tileXEnemigoIzquierda][tileYEnemigoSuperior+10].tipoDeColision + mapaTiles[tileXEnemigoDerecha][tileYEnemigoSuperior].tipoDeColision);
 
                 // Solo una condición para pasar: Tile izquierda pasable y suelo solido.
                 if (tileYEnemigoInferior + 1 <= altoMapaTiles() - 1
@@ -559,18 +568,35 @@ public class Nivel {
                 }
             }
         }
+        for (Iterator<Cofre> iterator = cofres.iterator(); iterator.hasNext();) {
+            Cofre cofre = iterator.next();
+            if (cofre.estado == Cofre.ELIMINAR){
+                iterator.remove();
+                continue;
+            }
+            if (jugador.colisiona(cofre) && cofre.estado == Cofre.ACTIVO) {
+                cofre.destruir();
+                jugador.armaActual = TipoArmas.ARMA_DISTANCIA;
+            }
+        }
+
     }
 
 
 
 
     public void dibujar (Canvas canvas) {
+        // EL orden importa
         if(inicializado) {
             fondo.dibujar(canvas);
 
             dibujarTiles(canvas);
             for(DisparoJugador disparoJugador: disparosJugador){
                 disparoJugador.dibujar(canvas);
+            }
+
+            for (Cofre cofre : cofres) {
+                cofre.dibujar(canvas);
             }
 
             jugador.dibujar(canvas);

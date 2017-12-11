@@ -30,6 +30,8 @@ public class DisparoJugador extends Modelo {
 
         if (orientacion == Jugador.IZQUIERDA)
             velocidadX = velocidadX*-1;
+        if (orientacion == Jugador.ABAJO)
+            velocidadY = velocidadY*-1;
 
         cDerecha = 6;
         cIzquierda = 6;
@@ -52,7 +54,7 @@ public class DisparoJugador extends Modelo {
         if(tipoArma== TipoArmas.ARMA_MELEE){
             tVidaMaximo = 2f;
         }else
-            tVidaMaximo= 10f;
+            tVidaMaximo= 100f;
     }
 
     public void rebotar(){
