@@ -672,6 +672,8 @@ public class Nivel {
                 }
                 else if (cofre.tipoCofre == Cofre.COFRE_VIDA) {
                     jugador.vidas++;
+                }else if(cofre.tipoCofre == Cofre.COFRE_ESCUDO){
+                    jugador.numeroEscudos++;
                 }
             }
         }
