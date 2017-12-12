@@ -2,6 +2,8 @@ package com.thebindingofisaac.modelos;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
+import android.util.Log;
 
 
 import com.thebindingofisaac.R;
@@ -38,7 +40,7 @@ public class Jugador extends Modelo {
 
     private Sprite sprite;
     private HashMap<String,Sprite> sprites = new HashMap<String,Sprite>();
-
+    private Drawable escudo;
 
     /// ORIENTACIONES ///
     public int orientacion;
@@ -58,10 +60,18 @@ public class Jugador extends Modelo {
 
     /// ESTADO ///
     int vidas = 6;
+    boolean escudado =false;
+    int numeroEscudos = 1;
+    int msEscudadoMaximo = 5000;
+    int msEscudado=5000;
+
 
     public boolean disparando;
     public boolean golpeado = false;
-    int msInmunidad = 2;
+
+
+
+    int msInmunidad = 0;
 
     public String armaActual;
 
@@ -161,6 +171,8 @@ public class Jugador extends Modelo {
 
 // animación actual
         sprite = paradoDerecha;
+
+        escudo = CargadorGraficos.cargarDrawable(context, R.drawable.sprshield);
     }
 
     public void procesarOrdenes (float orientacionPad, boolean disparar) {
@@ -193,11 +205,25 @@ public class Jugador extends Modelo {
             velocidadY = 0;
         }
     }
-
+    public void escudar(){
+        if(numeroEscudos>0) {
+            escudado = true;
+            msEscudado = msEscudadoMaximo;
+            numeroEscudos--;
+        }
+    }
 
     public void actualizar (long tiempo) {
+        Log.i("JUGADOR", " - INVENTARIO: *Escudos (" + numeroEscudos + " ) *Municion() ");
+
         if(msInmunidad > 0){
             msInmunidad -= tiempo;
+        }
+
+        if(msEscudado >0){
+            msEscudado-=tiempo;
+        }else if(msEscudado==0 && escudado){
+            escudado=false;
         }
 
         boolean finSprite = sprite.actualizar(tiempo);
@@ -258,7 +284,13 @@ public class Jugador extends Modelo {
     }
 
     public void dibujar(Canvas canvas){
-        sprite.dibujarSprite(canvas, (int) x - Nivel.scrollEjeX , (int) y - Nivel.scrollEjeY,msInmunidad > 0);
+        if(escudado){
+            Log.i("JUGADOR", "() ESCUDANDOSE   ");
+            escudo.setAlpha(150);
+            escudo.setBounds((int)x-40 - Nivel.scrollEjeX, (int)y-30- Nivel.scrollEjeY, (int)x+40 - Nivel.scrollEjeX, (int)y+30- Nivel.scrollEjeY);
+            escudo.draw(canvas);
+        }
+        sprite.dibujarSprite(canvas, (int) x - Nivel.scrollEjeX , (int) y - Nivel.scrollEjeY ,msInmunidad > 0);
     }
 
 
@@ -293,5 +325,6 @@ public class Jugador extends Modelo {
     public int getVidas() {
         return vidas;
     }
+    public int getEscudos(){return numeroEscudos;}
 
 }

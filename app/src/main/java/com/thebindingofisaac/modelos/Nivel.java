@@ -35,6 +35,7 @@ public class Nivel {
     public float orientacionPad = 0;
 
     public boolean botonDispararPulsado = false;
+    public boolean botonEscudoPulsado = false;
 
     private Context context = null;
     private int numeroNivel;
@@ -82,7 +83,7 @@ public class Nivel {
 
 
         inicializarMapaTiles();
-        cargarRespawnEnemigosXML(context);
+        cargarEnemigosXML(context);
     }
 
     private void inicializarMapaTiles() throws Exception {
@@ -115,13 +116,13 @@ public class Nivel {
         }
     }
 
-    public void cargarRespawnEnemigosXML(Context context) {
+    public void cargarEnemigosXML(Context context) {
         ParserXML parser = new ParserXML();
 
         if (doc == null) {
             String textoFicheroNivel = "";
             try {
-                InputStream inputStream =  context.getAssets().open("e"+numeroNivel + ".txt");
+                InputStream inputStream =  context.getAssets().open("e"+numeroNivel + ".xml");
                 BufferedReader bufferedReader = new BufferedReader(
                         new InputStreamReader(inputStream));
                 String linea = bufferedReader.readLine();
@@ -142,8 +143,7 @@ public class Nivel {
             String tipo = parser.getValor(elementoActual, "type");
             if (tipo.equals("Z"))
                 enemigosPorSpawnear.add(new Enemigo(context, 0, 0));
-
-        }
+       }
     }
 
     private Tile inicializarTile(char codigoTile, int x, int y) {
@@ -160,7 +160,7 @@ public class Nivel {
                 int yCentroAbajoTileE = y * Tile.altura + Tile.altura / 2;
                 enemigos.add(new Enemigo(context, xCentroAbajoTileE, yCentroAbajoTileE));
 
-                if(n>1)
+                if(n==1)
                     return new Tile(CargadorGraficos.cargarDrawable(context, R.drawable.medievaltile_115), Tile.PASABLE);
                 else
                     return new Tile(CargadorGraficos.cargarDrawable(context, R.drawable.medievaltile_002), Tile.PASABLE);
@@ -170,7 +170,7 @@ public class Nivel {
                 int yCentroAbajoTile4 = y * Tile.altura + Tile.altura;
                 puerta=new Puerta(context,xCentroAbajoTile4,yCentroAbajoTile4,4);
 
-                if(n>1)
+                if(n==1)
                     return new Tile(CargadorGraficos.cargarDrawable(context, R.drawable.medievaltile_115)
                             , Tile.PASABLE);
                 else
@@ -181,11 +181,13 @@ public class Nivel {
                 int xCentroAbajoTileC = x * Tile.ancho + Tile.ancho / 2;
                 int yCentroAbajoTileC = y * Tile.altura + Tile.altura;
                 Random r = new Random();
-                int tipo = (r.nextInt(2));
+                int tipo = (r.nextInt(3));
                 if (tipo == 0)
                     cofres.add(new Cofre(context, xCentroAbajoTileC, yCentroAbajoTileC, Cofre.COFRE_MEJORA_DISPARO));
                 else if (tipo == 1)
                     cofres.add(new Cofre(context, xCentroAbajoTileC, yCentroAbajoTileC, Cofre.COFRE_VIDA));
+                else if(tipo == 2)
+                    cofres.add(new Cofre(context, xCentroAbajoTileC, yCentroAbajoTileC, Cofre.COFRE_ESCUDO));
 
                 return new Tile(null, Tile.PASABLE);
 
@@ -201,7 +203,7 @@ public class Nivel {
             case '.':
                 // en blanco, sin textura
 
-                if(n>1)
+                if(n==1)
                     return new Tile(CargadorGraficos.cargarDrawable(context, R.drawable.medievaltile_115)
                             , Tile.PASABLE);
                 else
@@ -238,6 +240,11 @@ public class Nivel {
                 cofre.actualizar(tiempo);
             }
 
+            if(botonEscudoPulsado){
+                jugador.escudar();
+                Log.i("JUGADOR", "----> Escudado");
+                botonEscudoPulsado=false;
+            }
             if (botonDispararPulsado) {
                 DisparoJugador ataque = new DisparoJugador(context, jugador.x, jugador.y, jugador.orientacion,jugador.armaActual);
                 if(jugador.orientacion == jugador.ARRIBA)
@@ -314,17 +321,18 @@ public class Nivel {
                     tileXJugadorIzquierda + rango > tileXEnemigoIzquierda) {
 
                 if (jugador.colisiona(enemigo)) {
-                    if (jugador.golpeado() <= 0) {
+                    if(!jugador.escudado) {
+                        if (jugador.golpeado() <= 0) {
 
-                        nivelPausado = true;
-                        nivelPerdido=true;
+                            nivelPausado = true;
+                            nivelPerdido = true;
 
+                            mensaje = CargadorGraficos.cargarBitmap(context, R.drawable.you_lose);
+                            jugador.restablecerPosicionInicial();
 
-                        mensaje = CargadorGraficos.cargarBitmap(context, R.drawable.you_lose);
-                        jugador.restablecerPosicionInicial();
-
-                        scrollEjeX = 0;
-                        return;
+                            scrollEjeX = 0;
+                            return;
+                        }
                     }
                 }
             }

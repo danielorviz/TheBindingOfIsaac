@@ -22,6 +22,8 @@ public class Cofre extends Modelo {
 
     public static final int COFRE_MEJORA_DISPARO = 1;
     public static final int COFRE_VIDA = 2;
+    public static final int COFRE_ESCUDO=3;
+
     public int tipoCofre;
 
     private Sprite sprite;

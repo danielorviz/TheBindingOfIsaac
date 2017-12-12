@@ -11,19 +11,26 @@ import android.view.SurfaceView;
 
 import com.thebindingofisaac.gestores.GestorAudio;
 import com.thebindingofisaac.modelos.HUD.IconoVida;
+import com.thebindingofisaac.modelos.HUD.Inventario;
 import com.thebindingofisaac.modelos.Nivel;
 import com.thebindingofisaac.modelos.controles.BotonDisparar;
+import com.thebindingofisaac.modelos.controles.BotonEscudo;
 import com.thebindingofisaac.modelos.controles.Pad;
 
 
 public class GameView extends SurfaceView implements SurfaceHolder.Callback  {
 
-    private Pad pad;
+
     boolean iniciado = false;
     Context context;
     GameLoop gameloop;
+
+    private Pad pad;
     private BotonDisparar botonDisparar;
+    private BotonEscudo botonEscudo;
+
     private IconoVida[] contadorVidas;
+    private Inventario inventario;
 
 
     public static int pantallaAncho;
@@ -116,6 +123,13 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback  {
                     if(nivel.nivelPausado)
                         nivel.nivelPausado = false;
                 }
+
+                if(botonEscudo.estaPulsado(x[i],y[i])){
+                    if(accion[i]== ACTION_DOWN ){
+                        nivel.botonEscudoPulsado=true;
+                    }
+                }
+
                 if (botonDisparar.estaPulsado(x[i], y[i])) {
                     if (accion[i] == ACTION_DOWN) {
                         nivel.botonDispararPulsado = true;
@@ -174,6 +188,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback  {
         nivel = new Nivel(context,numeroNivel);
         pad = new Pad(context);
         botonDisparar = new BotonDisparar(context);
+        botonEscudo = new BotonEscudo(context);
         contadorVidas = new IconoVida[3];
         contadorVidas[0] = new IconoVida(context, GameView.pantallaAncho*0.05,
                 GameView.pantallaAlto*0.1);
@@ -185,8 +200,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback  {
         for(int i = 0; contadorVidas.length>i; i++){
             contadorVidas[i].inicializar();
         }
+        inventario = new Inventario(context, GameView.pantallaAncho*0.85,
+                GameView.pantallaAlto*0.05);
     }
-
     public void actualizar(long tiempo) throws Exception {
         if (nivel.nivelPerdido && !nivel.nivelPausado) {
             nivel.inicializar();
@@ -200,6 +216,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback  {
         if (!nivel.nivelPausado) {
             nivel.actualizar(tiempo);
 
+            inventario.setNumeroEscudos(nivel.jugador.getEscudos());
             int vidas = nivel.jugador.getVidas();
             if (vidas == 5) {
                 contadorVidas[2].estado = IconoVida.MITAD;
@@ -224,7 +241,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback  {
                 contadorVidas[i].actualizar(tiempo);
                 if (vidas == 6) contadorVidas[i].estado = IconoVida.COMPLETA;
             }
-    }
+        }
 
     }
 
@@ -232,11 +249,12 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback  {
         nivel.dibujar(canvas);
         pad.dibujar(canvas);
         botonDisparar.dibujar(canvas);
-
-        for(int i =0; i< contadorVidas.length; i++){
-
+        botonEscudo.dibujar(canvas);
+        inventario.dibujar(canvas);
+        for (int i = 0; i < contadorVidas.length; i++) {
             contadorVidas[i].dibujar(canvas);
         }
+
     }
 
     public void surfaceChanged(SurfaceHolder holder, int format, int width,
