@@ -7,8 +7,13 @@ import android.util.Log;
 import com.thebindingofisaac.GameView;
 import com.thebindingofisaac.R;
 import com.thebindingofisaac.gestores.CargadorGraficos;
+import com.thebindingofisaac.gestores.ParserXML;
 import com.thebindingofisaac.gestores.Utilidades;
 import com.thebindingofisaac.global.TipoArmas;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -21,6 +26,8 @@ import java.util.Random;
 public class Nivel {
     public static int scrollEjeX = 0;
     public static int scrollEjeY = 0;
+
+    Document doc;
 
     public float orientacionPad = 0;
 
@@ -36,6 +43,8 @@ public class Nivel {
     public LinkedList<DisparoJugador> disparosJugador;
     public LinkedList<Enemigo> enemigos;
     public List<Cofre> cofres;
+    public List<Enemigo> enemigosPorSpawnear;
+
     private Fondo fondo;
 
 
@@ -59,6 +68,7 @@ public class Nivel {
 
 
         inicializarMapaTiles();
+        cargarRespawnEnemigosXML(context);
     }
 
     private void inicializarMapaTiles() throws Exception {
@@ -88,6 +98,37 @@ public class Nivel {
                 char tipoDeTile = lineas.get(y).charAt(x);//lines[y][x];
                 mapaTiles[x][y] = inicializarTile(tipoDeTile, x, y);
             }
+        }
+    }
+
+    public void cargarRespawnEnemigosXML(Context context) {
+        ParserXML parser = new ParserXML();
+
+        if (doc == null) {
+            String textoFicheroNivel = "";
+            try {
+                InputStream inputStream =  context.getAssets().open("e"+numeroNivel + ".txt");
+                BufferedReader bufferedReader = new BufferedReader(
+                        new InputStreamReader(inputStream));
+                String linea = bufferedReader.readLine();
+                while (linea != null) {
+                    textoFicheroNivel += linea;
+                    linea = bufferedReader.readLine();
+                }
+                bufferedReader.close();
+            } catch (Exception ex) {
+            }
+
+            doc = parser.getDom(textoFicheroNivel);
+        }
+        enemigosPorSpawnear = new LinkedList<Enemigo>();
+        NodeList nodos = doc.getElementsByTagName("enemy");
+        for (int i = 0; i < nodos.getLength(); i++) {
+            Element elementoActual = (Element) nodos.item(i);
+            String tipo = parser.getValor(elementoActual, "type");
+            if (tipo.equals("Z"))
+                enemigosPorSpawnear.add(new Enemigo(context, 0, 0));
+
         }
     }
 
@@ -396,9 +437,7 @@ public class Nivel {
 
         // Hacia abajo
         if (jugador.velocidadY < 0) {
-            // Tile superior PASABLE
 
-            // Podemos seguir moviendo hacia arriba
             if (tileYJugadorSuperior - 1 >= 0 &&
                     mapaTiles[tileXJugadorIzquierda][tileYJugadorSuperior - 1].tipoDeColision
                             == Tile.PASABLE
@@ -407,8 +446,6 @@ public class Nivel {
 
                 jugador.y += jugador.velocidadY;
 
-                // Tile superior != de PASABLE
-                // O es un tile SOLIDO, o es el TECHO del mapa
             } else {
 
                 // Si en el propio tile del jugador queda espacio para
@@ -507,6 +544,7 @@ public class Nivel {
                 }
             }
         }
+
 // izquierda
         if (jugador.velocidadX <= 0 && jugador.orientacion == Jugador.IZQUIERDA) {
             // Tengo un tile detrás y es PASABLE
