@@ -281,11 +281,7 @@ public class Nivel {
 
                         mensaje = CargadorGraficos.cargarBitmap(context, R.drawable.you_lose);
                         jugador.restablecerPosicionInicial();
-                        try {
-                            inicializar();
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
+
                         scrollEjeX = 0;
                         return;
                     }
