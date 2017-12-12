@@ -2,13 +2,14 @@ package com.thebindingofisaac.modelos;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.util.Log;
 
 import com.thebindingofisaac.R;
 import com.thebindingofisaac.gestores.CargadorGraficos;
 import com.thebindingofisaac.graficos.Sprite;
 
 import java.util.HashMap;
-
+import java.util.List;
 
 
 public class Enemigo extends Modelo {
@@ -124,6 +125,24 @@ public class Enemigo extends Modelo {
     }
 
     public void moverseHaciaJugador(double jugadorX,double jugadorY){
+        Log.i("posicionesC","enemigo y "+ y + " x "+x+ "juga x "+jugadorX + " jugay "+jugadorY);
+
+        if(x==jugadorX){
+            if(y< jugadorY && velocidadY<0) {
+                girarY();
+            }else if(y> jugadorY && velocidadY>0){
+                girarY();
+            }
+            return;
+        }
+        if(y==jugadorY){
+            if(x< jugadorX && velocidadX<0) {
+                girarX();
+            }else if(x> jugadorX && velocidadY>0){
+                girarY();
+            }
+            return;
+        }
         if(x < jugadorX && y<jugadorY){
             if(velocidadX<0){
                 girarX();
@@ -131,6 +150,7 @@ public class Enemigo extends Modelo {
             if(velocidadY<0){
                 girarY();
             }
+            return;
         }
         if(x < jugadorX && y>jugadorY){
             if(velocidadX<0){
@@ -139,6 +159,7 @@ public class Enemigo extends Modelo {
             if(velocidadY>0){
                 girarY();
             }
+            return;
         }
         if(x > jugadorX && y<jugadorY){
             if(velocidadX>0){
@@ -147,6 +168,7 @@ public class Enemigo extends Modelo {
             if(velocidadY<0){
                 girarY();
             }
+            return;
         }
         if(x > jugadorX && y>jugadorY){
             if(velocidadX>0){
@@ -155,20 +177,8 @@ public class Enemigo extends Modelo {
             if(velocidadY>0){
                 girarY();
             }
+            return;
         }
-        if(x==jugadorX){
-            if(y< jugadorY && velocidadY<0) {
-                girarY();
-            }else if(y> jugadorY && velocidadY>0){
-                girarY();
-            }
-        }
-        if(y==jugadorY){
-            if(x< jugadorX && velocidadX<0) {
-                girarX();
-            }else if(x> jugadorX && velocidadY>0){
-                girarY();
-            }
-        }
+
     }
 }

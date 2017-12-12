@@ -28,6 +28,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback  {
 
     public static int pantallaAncho;
     public static int pantallaAlto;
+    public static final int NUM_NIVELES=3;
 
     private GestorAudio gestorAudio;
 
@@ -111,6 +112,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback  {
         for(int i=0; i < 6; i++){
             if(accion[i] != NO_ACTION ) {
 
+                if(accion[i] == ACTION_DOWN){
+                    if(nivel.nivelPausado)
+                        nivel.nivelPausado = false;
+                }
                 if (botonDisparar.estaPulsado(x[i], y[i])) {
                     if (accion[i] == ACTION_DOWN) {
                         nivel.botonDispararPulsado = true;
@@ -183,32 +188,43 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback  {
     }
 
     public void actualizar(long tiempo) throws Exception {
-        nivel.actualizar(tiempo);
+        if (nivel.nivelPerdido && !nivel.nivelPausado) {
+            nivel.inicializar();
+        }
+        if (nivel.nivelFinalizado && !nivel.nivelPausado) {
+            if (numeroNivel < NUM_NIVELES) {
+                numeroNivel++;
+            }
+            inicializar();
+        }
+        if (!nivel.nivelPausado) {
+            nivel.actualizar(tiempo);
 
-        int vidas =  nivel.jugador.getVidas();
-        if(vidas==5){
-            contadorVidas[2].estado = IconoVida.MITAD;
-        }else if(vidas==4){
-            contadorVidas[2].estado = IconoVida.VACIA;
-        }else if(vidas==3){
-            contadorVidas[2].estado = IconoVida.VACIA;
-            contadorVidas[1].estado = IconoVida.MITAD;
-        }else if(vidas==2){
-            contadorVidas[2].estado = IconoVida.VACIA;
-            contadorVidas[1].estado = IconoVida.VACIA;
-        }else if(vidas==1){
-            contadorVidas[2].estado = IconoVida.VACIA;
-            contadorVidas[1].estado = IconoVida.VACIA;
-            contadorVidas[0].estado = IconoVida.MITAD;
-        }else if(vidas==0){
-            contadorVidas[2].estado = IconoVida.VACIA;
-            contadorVidas[1].estado = IconoVida.VACIA;
-            contadorVidas[0].estado = IconoVida.VACIA;
-        }
-        for(int i =0; i<contadorVidas.length; i++) {
-            contadorVidas[i].actualizar(tiempo);
-            if(vidas==6) contadorVidas[i].estado = IconoVida.COMPLETA;
-        }
+            int vidas = nivel.jugador.getVidas();
+            if (vidas == 5) {
+                contadorVidas[2].estado = IconoVida.MITAD;
+            } else if (vidas == 4) {
+                contadorVidas[2].estado = IconoVida.VACIA;
+            } else if (vidas == 3) {
+                contadorVidas[2].estado = IconoVida.VACIA;
+                contadorVidas[1].estado = IconoVida.MITAD;
+            } else if (vidas == 2) {
+                contadorVidas[2].estado = IconoVida.VACIA;
+                contadorVidas[1].estado = IconoVida.VACIA;
+            } else if (vidas == 1) {
+                contadorVidas[2].estado = IconoVida.VACIA;
+                contadorVidas[1].estado = IconoVida.VACIA;
+                contadorVidas[0].estado = IconoVida.MITAD;
+            } else if (vidas == 0) {
+                contadorVidas[2].estado = IconoVida.VACIA;
+                contadorVidas[1].estado = IconoVida.VACIA;
+                contadorVidas[0].estado = IconoVida.VACIA;
+            }
+            for (int i = 0; i < contadorVidas.length; i++) {
+                contadorVidas[i].actualizar(tiempo);
+                if (vidas == 6) contadorVidas[i].estado = IconoVida.COMPLETA;
+            }
+    }
 
     }
 

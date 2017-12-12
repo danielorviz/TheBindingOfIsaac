@@ -50,7 +50,7 @@ public class Jugador extends Modelo {
 
     /// POSICIONAMIENTO ///
     double velocidadX;
-    float velocidadY;
+    double velocidadY;
 
     double xInicial;
     double yInicial;

@@ -1,7 +1,10 @@
 package com.thebindingofisaac.modelos;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.Rect;
 import android.util.Log;
 
 import com.thebindingofisaac.GameView;
@@ -31,6 +34,8 @@ public class Nivel {
     private Tile[][] mapaTiles;
     public Jugador jugador;
     public boolean inicializado;
+    private Puerta puerta;
+
 
 
     public LinkedList<DisparoJugador> disparosJugador;
@@ -38,8 +43,13 @@ public class Nivel {
     public List<Cofre> cofres;
     private Fondo fondo;
 
+    public boolean nivelFinalizado;
+    public Bitmap mensaje;
+    public boolean nivelPausado;
+    public boolean nivelPerdido;
 
     public Nivel(Context context, int numeroNivel) throws Exception {
+
         inicializado = false;
 
         this.context = context;
@@ -50,6 +60,10 @@ public class Nivel {
     }
 
     public void inicializar() throws Exception {
+
+        nivelPerdido=false;
+        nivelFinalizado=false;
+        nivelPausado=false;
         disparosJugador = new LinkedList<DisparoJugador>();
         enemigos = new LinkedList<Enemigo>();
         cofres = new LinkedList<Cofre>();
@@ -94,7 +108,10 @@ public class Nivel {
     private Tile inicializarTile(char codigoTile, int x, int y) {
         int xCentroAbajoTileP;
         int yCentroAbajoTileP;
+        Random random = new Random();
+        int n = random.nextInt(2);
         switch (codigoTile) {
+
             case 'E':
                 // Enemigo
                 // Posición centro del tile
@@ -102,13 +119,22 @@ public class Nivel {
                 int yCentroAbajoTileE = y * Tile.altura + Tile.altura / 2;
                 enemigos.add(new Enemigo(context, xCentroAbajoTileE, yCentroAbajoTileE));
 
-                Random rand = new Random();
-                int m = rand.nextInt(2);
-                if(m>1)
+                if(n>1)
                     return new Tile(CargadorGraficos.cargarDrawable(context, R.drawable.medievaltile_115), Tile.PASABLE);
                 else
                     return new Tile(CargadorGraficos.cargarDrawable(context, R.drawable.medievaltile_002), Tile.PASABLE);
 
+            case '4':
+                int xCentroAbajoTile4 = x * Tile.ancho + Tile.ancho/2;
+                int yCentroAbajoTile4 = y * Tile.altura + Tile.altura;
+                puerta=new Puerta(context,xCentroAbajoTile4,yCentroAbajoTile4,4);
+
+                if(n>1)
+                    return new Tile(CargadorGraficos.cargarDrawable(context, R.drawable.medievaltile_115)
+                            , Tile.PASABLE);
+                else
+                    return new Tile(CargadorGraficos.cargarDrawable(context, R.drawable.medievaltile_002)
+                            , Tile.PASABLE);
             case 'C':
                 // Cofre
                 int xCentroAbajoTileC = x * Tile.ancho + Tile.ancho / 2;
@@ -133,8 +159,7 @@ public class Nivel {
                         , Tile.PASABLE);
             case '.':
                 // en blanco, sin textura
-                Random random = new Random();
-                int n = random.nextInt(2);
+
                 if(n>1)
                     return new Tile(CargadorGraficos.cargarDrawable(context, R.drawable.medievaltile_115)
                             , Tile.PASABLE);
@@ -199,6 +224,14 @@ public class Nivel {
     ///                                                     //////
 
     private void aplicarReglasMovimiento() {
+        if(jugador.colisiona(puerta) && puerta.isActiva()){
+            Log.i("puerta","colisionando");
+            if(!nivelFinalizado){
+                mensaje=CargadorGraficos.cargarBitmap(context,R.drawable.you_win);
+                nivelPausado=true;
+                nivelFinalizado=true;
+            }
+        }
 
         int tileXJugadorIzquierda
                 = (int) (jugador.x - (jugador.ancho / 2 - 1)) / Tile.ancho;
@@ -241,7 +274,18 @@ public class Nivel {
 
                 if (jugador.colisiona(enemigo)) {
                     if (jugador.golpeado() <= 0) {
+
+                        nivelPausado = true;
+                        nivelPerdido=true;
+
+
+                        mensaje = CargadorGraficos.cargarBitmap(context, R.drawable.you_lose);
                         jugador.restablecerPosicionInicial();
+                        try {
+                            inicializar();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                         scrollEjeX = 0;
                         return;
                     }
@@ -601,6 +645,16 @@ public class Nivel {
             fondo.dibujar(canvas);
 
             dibujarTiles(canvas);
+            if(enemigos.size()==0){
+
+                puerta.dibujar(canvas);
+                if(!puerta.isActiva()){
+                    puerta.setActiva(true);
+                }
+
+            }else{
+                puerta.setActiva(false);
+            }
             for(DisparoJugador disparoJugador: disparosJugador){
                 disparoJugador.dibujar(canvas);
             }
@@ -613,6 +667,20 @@ public class Nivel {
 
             for(Enemigo enemigo: enemigos){
                 enemigo.dibujar(canvas);
+            }
+            if (nivelPausado){
+                // la foto mide 480x320
+                Rect orgigen = new Rect(0,0 ,
+                        480,320);
+
+                Paint efectoTransparente = new Paint();
+                efectoTransparente.setAntiAlias(true);
+
+                Rect destino = new Rect((int)(GameView.pantallaAncho/2 - 480/2),
+                        (int)(GameView.pantallaAlto/2 - 320/2),
+                        (int)(GameView.pantallaAncho/2 + 480/2),
+                        (int)(GameView.pantallaAlto/2 + 320/2));
+                canvas.drawBitmap(mensaje,orgigen,destino, null);
             }
 
         }
