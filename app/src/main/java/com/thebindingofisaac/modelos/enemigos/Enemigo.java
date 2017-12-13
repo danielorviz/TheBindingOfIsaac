@@ -1,4 +1,4 @@
-package com.thebindingofisaac.modelos;
+package com.thebindingofisaac.modelos.enemigos;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -7,6 +7,8 @@ import android.util.Log;
 import com.thebindingofisaac.R;
 import com.thebindingofisaac.gestores.CargadorGraficos;
 import com.thebindingofisaac.graficos.Sprite;
+import com.thebindingofisaac.modelos.Modelo;
+import com.thebindingofisaac.modelos.Nivel;
 
 import java.util.HashMap;
 import java.util.List;
@@ -22,13 +24,14 @@ public class Enemigo extends Modelo {
     public enum TipoEnemigo{
         ZOMBIE
     }
+
     public TipoEnemigo tipo=TipoEnemigo.ZOMBIE;
-
-
 
 
     public static final String CAMINANDO_DERECHA = "caminando_derecha";
     public static final String CAMINANDO_IZQUIERDA = "caminando_izquierda";
+    public static final String CAMINANDO_ABAJO = "caminando_abajo";
+    public static final String CAMINANDO_ARRIBA = "caminando_arriba";
     public static final String MUERTE_DERECHA = "muerte_derecha";
     public static final String MUERTE_IZQUIERDA = "muerte_izquierda";
 

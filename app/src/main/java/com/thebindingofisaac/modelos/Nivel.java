@@ -13,6 +13,7 @@ import com.thebindingofisaac.gestores.CargadorGraficos;
 import com.thebindingofisaac.gestores.ParserXML;
 import com.thebindingofisaac.gestores.Utilidades;
 import com.thebindingofisaac.global.TipoArmas;
+import com.thebindingofisaac.modelos.enemigos.Enemigo;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
