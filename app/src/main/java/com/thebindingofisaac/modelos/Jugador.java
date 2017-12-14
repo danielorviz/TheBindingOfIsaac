@@ -70,9 +70,6 @@ public class Jugador extends Modelo {
     public boolean disparando;
     public boolean golpeado = false;
 
-
-
-
     int msInmunidad = 0;
 
     public String armaActual;
