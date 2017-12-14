@@ -22,6 +22,8 @@ import org.w3c.dom.NodeList;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -50,7 +52,12 @@ public class Nivel {
     public LinkedList<DisparoJugador> disparosJugador;
     public LinkedList<Enemigo> enemigos;
     public List<Cofre> cofres;
-    public List<Enemigo> enemigosPorSpawnear;
+    public HashMap<Integer, LinkedList<Enemigo>> oleadas;
+    public List<Spawn> spawns;
+    float msTotalProximaOleada=5000;
+    float msRestantesParaOleada=5000;
+    int ronda = 0; //oleada actual
+
 
     private Fondo fondo;
 
@@ -71,14 +78,16 @@ public class Nivel {
     }
 
     public void inicializar() throws Exception {
-
         nivelPerdido=false;
         nivelFinalizado=false;
         nivelPausado=false;
         disparosJugador = new LinkedList<DisparoJugador>();
         enemigos = new LinkedList<Enemigo>();
         cofres = new LinkedList<Cofre>();
-
+        spawns = new ArrayList<Spawn>();
+        oleadas = new HashMap<Integer, LinkedList<Enemigo>>();
+        ronda=0;
+        msTotalProximaOleada=5000;
         fondo = new Fondo(context,CargadorGraficos.cargarBitmap(context,
                 R.drawable.fondo_gris), 0);
 
@@ -137,13 +146,18 @@ public class Nivel {
 
             doc = parser.getDom(textoFicheroNivel);
         }
-        enemigosPorSpawnear = new LinkedList<Enemigo>();
+
         NodeList nodos = doc.getElementsByTagName("enemy");
         for (int i = 0; i < nodos.getLength(); i++) {
             Element elementoActual = (Element) nodos.item(i);
+            String strNumOleada = parser.getValor(elementoActual, "round");
             String tipo = parser.getValor(elementoActual, "type");
+            int numOleada = Integer.parseInt(strNumOleada);
+
+            if(!oleadas.containsKey(numOleada))
+                oleadas.put(numOleada,new LinkedList<Enemigo>() );
             if (tipo.equals("Z"))
-                enemigosPorSpawnear.add(new Enemigo(context, 0, 0));
+                oleadas.get(numOleada).add(new Enemigo(context, 0, 0));
        }
     }
 
@@ -210,6 +224,14 @@ public class Nivel {
                 else
                     return new Tile(CargadorGraficos.cargarDrawable(context, R.drawable.medievaltile_002)
                             , Tile.PASABLE);
+
+            case 'S':
+                int xCentroAbajoTile5 = x * Tile.ancho + Tile.ancho/2;
+                int yCentroAbajoTile5 = y * Tile.altura + Tile.altura;
+                spawns.add(new Spawn(context,xCentroAbajoTile5,yCentroAbajoTile5,4));
+
+                return new Tile(CargadorGraficos.cargarDrawable(context, R.drawable.medievaltile_112)
+                        , Tile.PASABLE);
             case '$':
                 return new Tile(CargadorGraficos.cargarDrawable(context, R.drawable.medievaltile_112)
                         , Tile.SOLIDO);
@@ -227,6 +249,9 @@ public class Nivel {
 
     public void actualizar(long tiempo) {
         if (inicializado) {
+
+            gestionarOleadas(tiempo);
+
             for (DisparoJugador disparoJugador : disparosJugador) {
                 disparoJugador.actualizar(tiempo);
 
@@ -268,9 +293,6 @@ public class Nivel {
         }
     }
 
-
-    /////// TODO COMPLETAR REGLAS DE MOVIMIENTO DEL JUGADOR
-    ///                                                     //////
 
     private void aplicarReglasMovimiento() {
         if(jugador.colisiona(puerta) && puerta.isActiva()){
@@ -690,6 +712,10 @@ public class Nivel {
             fondo.dibujar(canvas);
 
             dibujarTiles(canvas);
+
+            for(Spawn sp: spawns){
+                sp.dibujar(canvas);
+            }
             if(enemigos.size()==0){
 
                 puerta.dibujar(canvas);
@@ -731,10 +757,6 @@ public class Nivel {
         }
     }
 
-
-
-     //////  TODO SCROLL Y ////
-
     private void dibujarTiles(Canvas canvas) {
 
         Log.println(Log.INFO, "POS_JUGADOR", "X: " + jugador.x + "Y: " + jugador.y);
@@ -757,10 +779,6 @@ public class Nivel {
             }
 
 
-    /*    if((jugador.y < GameView.pantallaAlto * 0.45)){
-            scrollEjeY = (int) ((GameView.pantallaAlto-285) - ( GameView.pantallaAlto * 0.45 - jugador.y));
-        }else
-            scrollEjeY = (int) (GameView.pantallaAlto-285);*/
         if(jugador.y -scrollEjeY > GameView.pantallaAlto*0.75) {
             scrollEjeY = (int) (jugador.y - GameView.pantallaAlto * 0.75);
 
@@ -793,6 +811,48 @@ public class Nivel {
         }
     }
 
+    public void gestionarOleadas(Long tiempo){
+        Log.i("OLEADAS", " Tiempo para siguiente oleada: "  + msRestantesParaOleada);
+        if(msRestantesParaOleada >0) {
+            msRestantesParaOleada -= tiempo;
+            if(msRestantesParaOleada<=0){
+
+                if(oleadas.size()>0 && oleadas.get(ronda+1) != null) {
+                    if(spawns.size()<=0){
+                        Log.e("OLEADAS", " ## NO ES POSIBLE LANZAR OLEADAS SIN SPAWNS" );
+                    }else {
+                        msTotalProximaOleada += 2000;  //Añadimos dos segundos mas al maximo para aumentar el espacio entre oleadas
+                        ronda++;
+                        Log.i("OLEADAS", " ----> Lanzando oleada: " + ronda);
+                        //las dos variables siguientes son usadas para seleccionar el punto de respawn
+                        int numeroSpawns = spawns.size() - 1;
+                        int spawnSeleccionado = 0;
+                        for (Enemigo e : oleadas.get(ronda)) { //por cada enemigo de la oleada
+                            //Establecemos la x del spawn en direccion al jugador para evitar colision con tiles no pasables
+                            if (jugador.x - spawns.get(spawnSeleccionado).x > 0)
+                                e.x = spawns.get(spawnSeleccionado).x + 15;
+                            else
+                                e.x = spawns.get(spawnSeleccionado).x - 15;
+                            e.y = spawns.get(spawnSeleccionado).y;
+
+                            spawnSeleccionado++;
+                            //si el proximo punto de spawn es superior al numero de spawns volvemos al primero
+                            if (spawnSeleccionado > numeroSpawns) spawnSeleccionado = 0;
+
+                            //añadimos el enemigo a la lista de enemigos para que sea dibujado
+                            enemigos.add(e);
+                            Log.i("OLEADAS", " --& Enemigo lanzado" );
+                        }
+                        //reiniciamos el tiempo para proxima oleada
+                        msRestantesParaOleada = msTotalProximaOleada;
+                    }
+                }
+
+            }
+        }
+
+    }
+
     private float tilesEnDistanciaX(double distanciaX){
         return (float) distanciaX/Tile.ancho;
     }
@@ -800,6 +860,7 @@ public class Nivel {
     private float tilesEnDistanciaY(double distanciaY){
         return (float) distanciaY/Tile.altura;
     }
+
 
 
     public int anchoMapaTiles(){

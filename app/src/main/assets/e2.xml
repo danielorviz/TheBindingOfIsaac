@@ -2,6 +2,7 @@
 <level id="1">
     <enemies>
         <enemy>
+            <round>1</round>
             <type>Z</type>
         </enemy>
     </enemies>
