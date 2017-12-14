@@ -428,6 +428,11 @@ public class Nivel {
                     }
                 }
             }
+            if(enemigo instanceof EnemigoHormiga &&
+                    mapaTiles[tileXEnemigoCentro][tileXEnemigoCentro].tipoDeColision == Tile.SOLIDO){
+                enemigo.destruir();
+                
+            }
 
             if(enemigo.velocidadX > 0){
                 //  Solo una condicion para pasar:  Tile delante libre, el de abajo solido
