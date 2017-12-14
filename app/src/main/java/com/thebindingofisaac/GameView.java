@@ -14,6 +14,7 @@ import com.thebindingofisaac.modelos.HUD.IconoVida;
 import com.thebindingofisaac.modelos.HUD.Inventario;
 import com.thebindingofisaac.modelos.HUD.Texto;
 import com.thebindingofisaac.modelos.Nivel;
+import com.thebindingofisaac.modelos.controles.BotonCambioArma;
 import com.thebindingofisaac.modelos.controles.BotonDisparar;
 import com.thebindingofisaac.modelos.controles.BotonEscudo;
 import com.thebindingofisaac.modelos.controles.Pad;
@@ -29,6 +30,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback  {
     private Pad pad;
     private BotonDisparar botonDisparar;
     private BotonEscudo botonEscudo;
+    private BotonCambioArma botonCambioArma;
 
     private IconoVida[] contadorVidas;
     private Inventario inventario;
@@ -124,6 +126,12 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback  {
                     if(nivel.nivelPausado)
                         nivel.nivelPausado = false;
                 }
+                if(botonCambioArma.estaPulsado(x[i],y[i]))
+                {
+                    if(accion[i] == ACTION_DOWN){
+                        nivel.botonCambioArmaPulsado=true;
+                    }
+                }
 
                 if(botonEscudo.estaPulsado(x[i],y[i])){
                     if(accion[i]== ACTION_DOWN ){
@@ -190,6 +198,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback  {
         pad = new Pad(context);
         botonDisparar = new BotonDisparar(context);
         botonEscudo = new BotonEscudo(context);
+        botonCambioArma = new BotonCambioArma(context);
+
         contadorVidas = new IconoVida[3];
         contadorVidas[0] = new IconoVida(context, GameView.pantallaAncho*0.05,
                 GameView.pantallaAlto*0.1);
@@ -220,6 +230,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback  {
         if (!nivel.nivelPausado) {
             nivel.actualizar(tiempo);
             inventario.setNumeroEscudos(nivel.jugador.getEscudos());
+            inventario.setNumeroMunicion(nivel.jugador.getMunicion());
             int vidas = nivel.jugador.getVidas();
             if (vidas == 5) {
                 contadorVidas[2].estado = IconoVida.MITAD;
@@ -259,6 +270,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback  {
         pad.dibujar(canvas);
         botonDisparar.dibujar(canvas);
         botonEscudo.dibujar(canvas);
+        botonCambioArma.dibujar(canvas);
         inventario.dibujar(canvas);
         textoInfo.dibujar(canvas);
         for (int i = 0; i < contadorVidas.length; i++) {

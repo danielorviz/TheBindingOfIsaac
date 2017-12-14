@@ -179,13 +179,14 @@ public class Jugador extends Modelo {
 
     public void procesarOrdenes (float orientacionPad, boolean disparar) {
 
-        if (disparar){
+        if (disparar && (municion>0 || armaActual == TipoArmas.ARMA_MELEE)){
             disparando = true;
             // preparar los sprites, no son bucles hay que reiniciarlos
             sprites.get(DISPARANDO_DERECHA).setFrameActual(0);
             sprites.get(DISPARANDO_IZQUIERDA).setFrameActual(0);
             sprites.get(DISPARANDO_ARRIBA).setFrameActual(0);
             sprites.get(DISPARANDO_ABAJO).setFrameActual(0);
+
         }
 
 
@@ -334,6 +335,6 @@ public class Jugador extends Modelo {
         return vidas;
     }
     public int getEscudos(){return numeroEscudos;}
-    public int getMunidion(){return municion;}
+    public int getMunicion(){return municion;}
 
 }

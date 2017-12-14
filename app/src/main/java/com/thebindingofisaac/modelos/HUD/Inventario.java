@@ -12,8 +12,8 @@ import com.thebindingofisaac.modelos.Modelo;
 
 
 public class Inventario extends Modelo {
-    private int numeroEscudos;
-    private int numeroMunicion;
+    private int numeroEscudos=0;
+    private int numeroMunicion=0;
 
     Drawable imagenEscudo;
     Drawable imagenBala;
@@ -22,13 +22,11 @@ public class Inventario extends Modelo {
         super(context, x, y, 20,20);
 
         imagenEscudo = CargadorGraficos.cargarDrawable(context, R.drawable.shield32);
-        imagenBala = CargadorGraficos.cargarDrawable(context, R.drawable.tanks_crateammo);
+        imagenBala = CargadorGraficos.cargarDrawable(context, R.drawable.bala);
     }
 
     @Override
     public void dibujar(Canvas canvas){
-
-
 
         int yArriba = (int)  y - altura / 2;
         int xIzquierda = (int) x - ancho / 2;
@@ -42,13 +40,21 @@ public class Inventario extends Modelo {
         paint.setTextSize(15);
         canvas.drawText(String.valueOf(numeroEscudos), (int)x+(ancho), (int)y+5, paint);
 
-        imagenBala.setBounds((int)xIzquierda+(ancho/2) -40, yArriba , xIzquierda
-                + ancho+(ancho/2) - 40, yArriba +30);
+
+        imagenBala.setBounds((int)xIzquierda+(ancho/2) -50, yArriba , xIzquierda
+                + ancho+(ancho/2) -50 , yArriba +altura);
         imagenBala.draw(canvas);
+
+        Paint paintBalas = new Paint();
+        paintBalas.setColor(Color.parseColor("#ffa500"));
+        paintBalas.setAntiAlias(true);
+        paintBalas.setTextSize(15);
+        canvas.drawText(String.valueOf(numeroMunicion), (int)(int)xIzquierda+(ancho/2) -50+ancho, (int)y+5, paintBalas);
+
     }
 
     public void setNumeroEscudos(int n){
         numeroEscudos=n;
     }
-
+    public void setNumeroMunicion(int n ){numeroMunicion = n;}
 }

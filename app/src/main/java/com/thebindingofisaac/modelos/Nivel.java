@@ -29,6 +29,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
+import javax.xml.validation.TypeInfoProvider;
+
 public class Nivel {
     public static int scrollEjeX = 0;
     public static int scrollEjeY = 0;
@@ -39,6 +41,7 @@ public class Nivel {
 
     public boolean botonDispararPulsado = false;
     public boolean botonEscudoPulsado = false;
+    public boolean botonCambioArmaPulsado=false;
 
     private Context context = null;
     private int numeroNivel;
@@ -274,8 +277,18 @@ public class Nivel {
                 Log.i("JUGADOR", "----> Escudado");
                 botonEscudoPulsado=false;
             }
+            if(botonCambioArmaPulsado){
+                jugador.cambiarArma();
+                Log.i("JUGADOR", "Cambiando arma");
+                texto = "Equipada ";
+                if(jugador.armaActual== TipoArmas.ARMA_DISTANCIA)
+                    texto += "pistola";
+                else texto +="espada";
+                textoPorMostrar=true;
+                botonCambioArmaPulsado=false;
+            }
             if (botonDispararPulsado) {
-                if(jugador.getMunidion()>0) {
+                if(jugador.getMunicion()>0 || jugador.armaActual == TipoArmas.ARMA_MELEE) {
                     DisparoJugador ataque = new DisparoJugador(context, jugador.x, jugador.y, jugador.orientacion, jugador.armaActual);
                     if (jugador.orientacion == jugador.ARRIBA)
                         ataque.y -= 25;
@@ -285,10 +298,14 @@ public class Nivel {
                         ataque.x += 25;
                     else if (jugador.orientacion == jugador.IZQUIERDA)
                         ataque.x -= 25;
-
                     disparosJugador.add(ataque);
+                    if(jugador.armaActual == TipoArmas.ARMA_DISTANCIA) jugador.municion--;
+                } else if(jugador.getMunicion()<1 && jugador.armaActual == TipoArmas.ARMA_DISTANCIA ){
+                    texto = "Sin municion";
+                    textoPorMostrar=true;
+                }
+                    botonDispararPulsado = false;
 
-                } botonDispararPulsado = false;
             }
 
             jugador.actualizar(tiempo);

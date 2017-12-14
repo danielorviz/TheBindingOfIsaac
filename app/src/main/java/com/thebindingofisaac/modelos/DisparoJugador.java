@@ -33,13 +33,9 @@ public class DisparoJugador extends Modelo {
         else if (orientacion == Jugador.ABAJO) velocidadY=8;
         else if(orientacion == Jugador.ARRIBA) velocidadY = -8;
 
-        if(tipoArma==TipoArmas.ARMA_MELEE) {
-            cDerecha = 10;
-            cIzquierda = 10;
-        }else {
-            cDerecha = 6;
-            cIzquierda = 6;
-        }
+
+        cDerecha = 6;
+        cIzquierda = 6;
         cArriba = 6;
         cAbajo = 6;
 
@@ -57,7 +53,7 @@ public class DisparoJugador extends Modelo {
                 25, 4, true);
 
         if(tipoArma== TipoArmas.ARMA_MELEE){
-            tVida = 500f;
+            tVida =1;
         }else
             tVida= 3000f;
     }
