@@ -30,20 +30,10 @@ public class EnemigoBomba extends Enemigo {
 
 
     public EnemigoBomba(Context context, double xInicial, double yInicial) {
-        super(context, 0, 0);
+        super(context, xInicial, yInicial, 44, 33);
 
-        altura = 44;
-        ancho = 33;
         velocidadX = 1.6;
         velocidadY = 1.6;
-
-        this.x = xInicial;
-        this.y = yInicial - altura/2;
-
-        cDerecha = 15;
-        cIzquierda = 15;
-        cArriba = 20;
-        cAbajo = 10;
 
         bombas = new ArrayList<Bomba>();
 
@@ -131,7 +121,7 @@ public class EnemigoBomba extends Enemigo {
         }
     }
 
-    public void movimientoAleatorio(Canvas canvas) {
+    public void movimientoAleatorio() {
 
         Random r = new Random();
         int mov = r.nextInt(2);
@@ -157,6 +147,15 @@ public class EnemigoBomba extends Enemigo {
         }
     }
 
+    public void girarX(){
+        velocidadX = velocidadX*-1;
+    }
+
+    public void girarY(){
+        velocidadY = velocidadY*-1;
+    }
+
+
     public void colocarBomba() {
 
         Bomba bomba = new Bomba(context, x, y);
@@ -166,9 +165,9 @@ public class EnemigoBomba extends Enemigo {
     public void dibujar(Canvas canvas){
         sprite.dibujarSprite(canvas, (int) x - Nivel.scrollEjeX, (int) y - Nivel.scrollEjeY);
 
-        for (Bomba bomba : bombas) {
-            bomba.dibujar(canvas);
-        }
+//        for (Bomba bomba : bombas) {
+//            bomba.dibujar(canvas);
+//        }
     }
 
 }

@@ -70,9 +70,6 @@ public class Jugador extends Modelo {
     public boolean disparando;
     public boolean golpeado = false;
 
-
-
-
     int msInmunidad = 0;
 
     public String armaActual;
@@ -334,6 +331,6 @@ public class Jugador extends Modelo {
         return vidas;
     }
     public int getEscudos(){return numeroEscudos;}
-    public int getMunidion(){return municion;}
+    public int getMunicion(){return municion;}
 
 }

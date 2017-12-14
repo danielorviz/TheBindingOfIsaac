@@ -14,6 +14,8 @@ import com.thebindingofisaac.gestores.ParserXML;
 import com.thebindingofisaac.gestores.Utilidades;
 import com.thebindingofisaac.global.TipoArmas;
 import com.thebindingofisaac.modelos.enemigos.Enemigo;
+import com.thebindingofisaac.modelos.enemigos.EnemigoBomba;
+import com.thebindingofisaac.modelos.enemigos.EnemigoZombie;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -46,7 +48,6 @@ public class Nivel {
     public Jugador jugador;
     public boolean inicializado;
     private Puerta puerta;
-
 
 
     public LinkedList<DisparoJugador> disparosJugador;
@@ -160,7 +161,7 @@ public class Nivel {
             if(!oleadas.containsKey(numOleada))
                 oleadas.put(numOleada,new LinkedList<Enemigo>() );
             if (tipo.equals("Z"))
-                oleadas.get(numOleada).add(new Enemigo(context, 0, 0));
+                oleadas.get(numOleada).add(new EnemigoZombie(context, 0, 0));
        }
     }
 
@@ -172,16 +173,29 @@ public class Nivel {
         switch (codigoTile) {
 
             case 'E':
-                // Enemigo
+                // EnemigoZombie
                 // Posición centro del tile
                 int xCentroAbajoTileE = x * Tile.ancho + Tile.ancho / 2;
-                int yCentroAbajoTileE = y * Tile.altura + Tile.altura / 2;
-                enemigos.add(new Enemigo(context, xCentroAbajoTileE, yCentroAbajoTileE));
+                int yCentroAbajoTileE = y * Tile.altura + Tile.altura;
+                enemigos.add(new EnemigoZombie(context, xCentroAbajoTileE, yCentroAbajoTileE));
 
                 if(n==1)
                     return new Tile(CargadorGraficos.cargarDrawable(context, R.drawable.medievaltile_115), Tile.PASABLE);
                 else
                     return new Tile(CargadorGraficos.cargarDrawable(context, R.drawable.medievaltile_002), Tile.PASABLE);
+
+            case 'B':
+                // EnemigoBomba
+                int xCentroAbajoTileEB = x * Tile.ancho + Tile.ancho / 2;
+                int yCentroAbajoTileEB = y * Tile.altura + Tile.altura / 2;
+                enemigos.add(new EnemigoBomba(context, xCentroAbajoTileEB, yCentroAbajoTileEB));
+
+                if(n==1)
+                    return new Tile(CargadorGraficos.cargarDrawable(context, R.drawable.medievaltile_115)
+                            , Tile.PASABLE);
+                else
+                    return new Tile(CargadorGraficos.cargarDrawable(context, R.drawable.medievaltile_002)
+                            , Tile.PASABLE);
 
             case '4':
                 int xCentroAbajoTile4 = x * Tile.ancho + Tile.ancho/2;
@@ -207,7 +221,12 @@ public class Nivel {
                 else if(tipo == 2)
                     cofres.add(new Cofre(context, xCentroAbajoTileC, yCentroAbajoTileC, Cofre.COFRE_ESCUDO));
 
-                return new Tile(null, Tile.PASABLE);
+                if(n==1)
+                    return new Tile(CargadorGraficos.cargarDrawable(context, R.drawable.medievaltile_115)
+                            , Tile.PASABLE);
+                else
+                    return new Tile(CargadorGraficos.cargarDrawable(context, R.drawable.medievaltile_002)
+                            , Tile.PASABLE);
 
             case '1':
                 // Jugador
@@ -275,7 +294,7 @@ public class Nivel {
                 botonEscudoPulsado=false;
             }
             if (botonDispararPulsado) {
-                if(jugador.getMunidion()>0) {
+                if(jugador.getMunicion() > 0 || jugador.armaActual == TipoArmas.ARMA_MELEE) {
                     DisparoJugador ataque = new DisparoJugador(context, jugador.x, jugador.y, jugador.orientacion, jugador.armaActual);
                     if (jugador.orientacion == jugador.ARRIBA)
                         ataque.y -= 25;
@@ -376,7 +395,7 @@ public class Nivel {
                        // && mapaTiles[tileXEnemigoDerecha + 1][tileYEnemigoInferior + 1].tipoDeColision == Tile.PASABLE
                     ) {
 
-                    //enemigo.moverseHaciaJugador(jugador.x,jugador.y);
+                    //enemigoZombie.moverseHaciaJugador(jugador.x,jugador.y);
                     enemigo.x += enemigo.velocidadX;
 
 
@@ -412,7 +431,7 @@ public class Nivel {
                         &&
                         mapaTiles[tileXEnemigoCentro][tileYEnemigoCentro].tipoDeColision==Tile.PASABLE) {
 
-                    //enemigo.moverseHaciaJugador(jugador.x,jugador.y);
+                    //enemigoZombie.moverseHaciaJugador(jugador.x,jugador.y);
                     enemigo.x += enemigo.velocidadX;
 
                     // Solido / borde del tile acercarse.
@@ -444,7 +463,7 @@ public class Nivel {
                         == Tile.PASABLE
                         && mapaTiles[tileXEnemigoDerecha][tileYEnemigoSuperior].tipoDeColision
                         == Tile.PASABLE && mapaTiles[tileXEnemigoCentro][tileYEnemigoSuperior-1].tipoDeColision ==Tile.PASABLE){
-                    //enemigo.moverseHaciaJugador(jugador.x,jugador.y);
+                    //enemigoZombie.moverseHaciaJugador(jugador.x,jugador.y);
                     enemigo.y += enemigo.velocidadY;
 
                     // Solido / borde del tile acercarse.
@@ -474,7 +493,7 @@ public class Nivel {
                         && mapaTiles[tileXEnemigoDerecha][tileYEnemigoInferior].tipoDeColision == Tile.PASABLE
                         ) {
 
-                    //enemigo.moverseHaciaJugador(jugador.x,jugador.y);
+                    //enemigoZombie.moverseHaciaJugador(jugador.x,jugador.y);
                     enemigo.y += enemigo.velocidadY;
 
                     // Solido / borde del tile acercarse.
@@ -497,8 +516,10 @@ public class Nivel {
                     // va a desaparecer y perder.
                 }
             }
-
-           enemigo.moverseHaciaJugador(jugador.x,jugador.y);
+            if (enemigo instanceof EnemigoZombie) {
+                EnemigoZombie enemigoZombie = (EnemigoZombie) enemigo;
+                enemigoZombie.moverseHaciaJugador(jugador.x,jugador.y);
+            }
 
             Log.i("posicion_enemigo", "xcentro: " + tileXEnemigoCentro + " ycentro: " + tileYEnemigoCentro +
                     " xder: " + tileXEnemigoDerecha + " xizq: " + tileXEnemigoIzquierda
@@ -678,7 +699,7 @@ public class Nivel {
 
             for (Enemigo enemigo : enemigos) {
                 if (disparoJugador.colisiona(enemigo)) {
-                    if (enemigo.estado != enemigo.INACTIVO)
+                    if (enemigo.estado != Enemigo.INACTIVO)
                         enemigo.destruir();
 
                     iterator.remove();
@@ -751,9 +772,10 @@ public class Nivel {
 
             jugador.dibujar(canvas);
 
-            for(Enemigo enemigo: enemigos){
+            for(Enemigo enemigo : enemigos){
                 enemigo.dibujar(canvas);
             }
+
             if (nivelPausado){
                 // la foto mide 480x320
                 Rect orgigen = new Rect(0,0 ,
@@ -856,7 +878,7 @@ public class Nivel {
 
                             //añadimos el enemigo a la lista de enemigos para que sea dibujado
                             enemigos.add(e);
-                            Log.i("OLEADAS", " --& Enemigo lanzado" );
+                            Log.i("OLEADAS", " --& EnemigoZombie lanzado" );
                         }
                         //reiniciamos el tiempo para proxima oleada
                         msRestantesParaOleada = msTotalProximaOleada;
