@@ -32,8 +32,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
-import javax.xml.validation.TypeInfoProvider;
-
 public class Nivel {
     public static int scrollEjeX = 0;
     public static int scrollEjeY = 0;
@@ -52,7 +50,7 @@ public class Nivel {
     public Jugador jugador;
     public boolean inicializado;
     private Puerta puerta;
-
+    private List<BloqueDestructible> destructibles;
 
     public LinkedList<DisparoJugador> disparosJugador;
     public LinkedList<Enemigo> enemigos;
@@ -94,6 +92,7 @@ public class Nivel {
         cofres = new LinkedList<Cofre>();
         spawns = new ArrayList<Spawn>();
         oleadas = new HashMap<Integer, LinkedList<Enemigo>>();
+        destructibles = new LinkedList<BloqueDestructible>() ;
         ronda=0;
         msTotalProximaOleada=5000;
         fondo = new Fondo(context,CargadorGraficos.cargarBitmap(context,
@@ -166,6 +165,10 @@ public class Nivel {
                 oleadas.put(numOleada,new LinkedList<Enemigo>() );
             if (tipo.equals("Z"))
                 oleadas.get(numOleada).add(new EnemigoZombie(context, 0, 0));
+            if (tipo.equals("B"))
+                oleadas.get(numOleada).add(new EnemigoBomba(context, 0, 0));
+            if (tipo.equals("H"))
+                oleadas.get(numOleada).add(new EnemigoHormiga(context, 0, 0));
        }
     }
 
@@ -175,6 +178,18 @@ public class Nivel {
         Random random = new Random();
         int n = random.nextInt(2);
         switch (codigoTile) {
+
+            case 'D':
+                // Obstaculo
+                // Posición centro del tile
+                int xCentroAbajoTileD = x * Tile.ancho + Tile.ancho / 2;
+                int yCentroAbajoTileD = y * Tile.altura + Tile.altura;
+                destructibles.add(new BloqueDestructible(context, xCentroAbajoTileD, yCentroAbajoTileD));
+
+                if(n==1)
+                    return new Tile(CargadorGraficos.cargarDrawable(context, R.drawable.medievaltile_115), Tile.PASABLE);
+                else
+                    return new Tile(CargadorGraficos.cargarDrawable(context, R.drawable.medievaltile_002), Tile.PASABLE);
 
             case 'E':
                 // EnemigoZombie
@@ -731,6 +746,11 @@ public class Nivel {
             disparoJugador.x += disparoJugador.velocidadX;
             disparoJugador.y += disparoJugador.velocidadY;
 
+            for(BloqueDestructible o : destructibles){
+                if(disparoJugador.colisiona(o)){
+                    o.destruir();
+                }
+            }
             for (Enemigo enemigo : enemigos) {
                 if (disparoJugador.colisiona(enemigo)) {
                     if (enemigo.estado != Enemigo.INACTIVO)
@@ -796,6 +816,10 @@ public class Nivel {
             for(Spawn sp: spawns){
                 sp.dibujar(canvas);
             }
+            for(BloqueDestructible bd : destructibles){
+                bd.dibujar(canvas);
+            }
+
             if(enemigos.size()==0){
 
                 puerta.dibujar(canvas);

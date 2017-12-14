@@ -3,7 +3,11 @@
     <enemies>
         <enemy>
             <round>1</round>
-            <type>Z</type>
+            <type>H</type>
+        </enemy>
+        <enemy>
+            <round>1</round>
+            <type>H</type>
         </enemy>
     </enemies>
 </level>
