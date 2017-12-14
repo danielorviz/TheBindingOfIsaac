@@ -28,6 +28,7 @@ public class EnemigoBomba extends Enemigo {
     public long tiempoBomba = 0;
     public int radioExplosion = 100;
 
+    public TipoEnemigo tipo=TipoEnemigo.BOMBA;
 
     public EnemigoBomba(Context context, double xInicial, double yInicial) {
         super(context, xInicial, yInicial, 44, 33);

@@ -15,6 +15,7 @@ import com.thebindingofisaac.gestores.Utilidades;
 import com.thebindingofisaac.global.TipoArmas;
 import com.thebindingofisaac.modelos.enemigos.Enemigo;
 import com.thebindingofisaac.modelos.enemigos.EnemigoBomba;
+import com.thebindingofisaac.modelos.enemigos.EnemigoHormiga;
 import com.thebindingofisaac.modelos.enemigos.EnemigoZombie;
 
 import org.w3c.dom.Document;
@@ -181,6 +182,18 @@ public class Nivel {
                 int xCentroAbajoTileE = x * Tile.ancho + Tile.ancho / 2;
                 int yCentroAbajoTileE = y * Tile.altura + Tile.altura;
                 enemigos.add(new EnemigoZombie(context, xCentroAbajoTileE, yCentroAbajoTileE));
+
+                if(n==1)
+                    return new Tile(CargadorGraficos.cargarDrawable(context, R.drawable.medievaltile_115), Tile.PASABLE);
+                else
+                    return new Tile(CargadorGraficos.cargarDrawable(context, R.drawable.medievaltile_002), Tile.PASABLE);
+
+            case 'H':
+                // EnemigoHormiga
+                // Posición centro del tile
+                int xCentroAbajoTileH = x * Tile.ancho + Tile.ancho / 2;
+                int yCentroAbajoTileH = y * Tile.altura + Tile.altura;
+                enemigos.add(new EnemigoHormiga(context, xCentroAbajoTileH, yCentroAbajoTileH));
 
                 if(n==1)
                     return new Tile(CargadorGraficos.cargarDrawable(context, R.drawable.medievaltile_115), Tile.PASABLE);
@@ -537,6 +550,9 @@ public class Nivel {
             if (enemigo instanceof EnemigoZombie) {
                 EnemigoZombie enemigoZombie = (EnemigoZombie) enemigo;
                 enemigoZombie.moverseHaciaJugador(jugador.x,jugador.y);
+            }  if (enemigo instanceof EnemigoHormiga) {
+                EnemigoHormiga enemigoHormiga = (EnemigoHormiga) enemigo;
+                enemigoHormiga.moverseHaciaJugador(jugador.x,jugador.y);
             }
 
             Log.i("posicion_enemigo", "xcentro: " + tileXEnemigoCentro + " ycentro: " + tileYEnemigoCentro +
@@ -718,8 +734,18 @@ public class Nivel {
             for (Enemigo enemigo : enemigos) {
                 if (disparoJugador.colisiona(enemigo)) {
                     if (enemigo.estado != Enemigo.INACTIVO)
-                        enemigo.destruir();
+                        if (enemigo instanceof EnemigoHormiga) {
+                            if(((EnemigoHormiga) enemigo).divisiones >0){
 
+                                EnemigoHormiga aux1 = new EnemigoHormiga(context, enemigo.x+30, enemigo.y+30);
+                                EnemigoHormiga aux2 = new EnemigoHormiga(context, enemigo.x-30, enemigo.y-30);
+                                aux1.divisiones= ((EnemigoHormiga) enemigo).divisiones-1;
+                                aux2.divisiones= ((EnemigoHormiga) enemigo).divisiones-1;
+                                enemigos.add(aux1);
+                                enemigos.add(aux2);
+                            }
+                        }
+                        enemigo.destruir();
                     iterator.remove();
                     break;
                 }

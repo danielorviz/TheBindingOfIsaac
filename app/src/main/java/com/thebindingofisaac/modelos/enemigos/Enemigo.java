@@ -16,7 +16,7 @@ public abstract class Enemigo extends Modelo {
     public static final int ELIMINAR = -1;
 
     public enum TipoEnemigo{
-        ZOMBIE
+        ZOMBIE, BOMBA, HORMIGA
     }
 
 
