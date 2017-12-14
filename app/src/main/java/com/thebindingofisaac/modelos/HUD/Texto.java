@@ -11,38 +11,41 @@ import com.thebindingofisaac.gestores.CargadorGraficos;
 import com.thebindingofisaac.modelos.Modelo;
 
 
-public class Inventario extends Modelo {
-    private int numeroEscudos;
-    private int numeroMunicion;
+public class Texto extends Modelo {
 
-    Drawable imagenEscudo;
+    String texto="";
+    float msTiempo=0;
+    boolean activo=false;
 
-
-    public Inventario(Context context, double x, double y) {
+    public Texto(Context context, double x, double y) {
         super(context, x, y, 20,20);
+    }
 
-        imagenEscudo = CargadorGraficos.cargarDrawable(context, R.drawable.shield32);
+    public void mostrar(String texto){
+        this.texto=texto;
+        msTiempo = 5000;
+        activo =true;
+    }
 
+    public void actualizar (long tiempo) {
+        if(msTiempo >0){
+            msTiempo-=tiempo;
+            if(msTiempo<=0) activo=false;
+        }
     }
 
     @Override
     public void dibujar(Canvas canvas){
-
-        int yArriba = (int)  y - altura / 2;
-        int xIzquierda = (int) x - ancho / 2;
-        imagenEscudo.setBounds(xIzquierda, yArriba, xIzquierda
-                + ancho, yArriba + altura);
-        imagenEscudo.draw(canvas);
-
-        Paint paint = new Paint();
-        paint.setColor(Color.BLUE);
-        paint.setAntiAlias(true);
-        paint.setTextSize(15);
-        canvas.drawText(String.valueOf(numeroEscudos), (int)x+(ancho), (int)y+5, paint);
+        if(activo) {
+            Paint paint = new Paint();
+            paint.setColor(Color.RED);
+            paint.setAntiAlias(true);
+            if(msTiempo<1000) paint.setAlpha((int) ((msTiempo)*0.1));
+            paint.setFakeBoldText(true);
+            paint.setTextSize(13);
+            canvas.drawText(texto, (int) x, (int) y, paint);
+        }
     }
 
-    public void setNumeroEscudos(int n){
-        numeroEscudos=n;
-    }
 
 }

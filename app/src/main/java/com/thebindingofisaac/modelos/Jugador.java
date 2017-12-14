@@ -60,6 +60,7 @@ public class Jugador extends Modelo {
 
     /// ESTADO ///
     int vidas = 6;
+    int municion=0;
     boolean escudado =false;
     int numeroEscudos = 1;
     int msEscudadoMaximo = 5000;
@@ -68,6 +69,7 @@ public class Jugador extends Modelo {
 
     public boolean disparando;
     public boolean golpeado = false;
+
 
 
 
@@ -322,9 +324,16 @@ public class Jugador extends Modelo {
         yInicial = y;
     }
 
+    public void cambiarArma(){
+        if(armaActual == TipoArmas.ARMA_MELEE)
+            armaActual = TipoArmas.ARMA_DISTANCIA;
+        else armaActual = TipoArmas.ARMA_MELEE;
+    }
+
     public int getVidas() {
         return vidas;
     }
     public int getEscudos(){return numeroEscudos;}
+    public int getMunidion(){return municion;}
 
 }

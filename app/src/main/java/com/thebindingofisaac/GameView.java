@@ -12,6 +12,7 @@ import android.view.SurfaceView;
 import com.thebindingofisaac.gestores.GestorAudio;
 import com.thebindingofisaac.modelos.HUD.IconoVida;
 import com.thebindingofisaac.modelos.HUD.Inventario;
+import com.thebindingofisaac.modelos.HUD.Texto;
 import com.thebindingofisaac.modelos.Nivel;
 import com.thebindingofisaac.modelos.controles.BotonDisparar;
 import com.thebindingofisaac.modelos.controles.BotonEscudo;
@@ -31,7 +32,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback  {
 
     private IconoVida[] contadorVidas;
     private Inventario inventario;
-
+    private Texto textoInfo;
 
     public static int pantallaAncho;
     public static int pantallaAlto;
@@ -202,6 +203,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback  {
         }
         inventario = new Inventario(context, GameView.pantallaAncho*0.85,
                 GameView.pantallaAlto*0.05);
+
+        textoInfo = new Texto(context, GameView.pantallaAncho*0.03,
+                GameView.pantallaAlto*0.23);
     }
     public void actualizar(long tiempo) throws Exception {
         if (nivel.nivelPerdido && !nivel.nivelPausado) {
@@ -215,7 +219,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback  {
         }
         if (!nivel.nivelPausado) {
             nivel.actualizar(tiempo);
-
             inventario.setNumeroEscudos(nivel.jugador.getEscudos());
             int vidas = nivel.jugador.getVidas();
             if (vidas == 5) {
@@ -241,6 +244,12 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback  {
                 contadorVidas[i].actualizar(tiempo);
                 if (vidas == 6) contadorVidas[i].estado = IconoVida.COMPLETA;
             }
+
+            if(nivel.textoPorMostrar){
+                textoInfo.mostrar(nivel.texto);
+                nivel.textoPorMostrar=false;
+            }
+            textoInfo.actualizar(tiempo);
         }
 
     }
@@ -251,6 +260,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback  {
         botonDisparar.dibujar(canvas);
         botonEscudo.dibujar(canvas);
         inventario.dibujar(canvas);
+        textoInfo.dibujar(canvas);
         for (int i = 0; i < contadorVidas.length; i++) {
             contadorVidas[i].dibujar(canvas);
         }

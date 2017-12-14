@@ -58,6 +58,9 @@ public class Nivel {
     float msRestantesParaOleada=5000;
     int ronda = 0; //oleada actual
 
+    //string texto sobre inventario
+    public String texto;
+    public boolean textoPorMostrar=false;
 
     private Fondo fondo;
 
@@ -272,19 +275,20 @@ public class Nivel {
                 botonEscudoPulsado=false;
             }
             if (botonDispararPulsado) {
-                DisparoJugador ataque = new DisparoJugador(context, jugador.x, jugador.y, jugador.orientacion,jugador.armaActual);
-                if(jugador.orientacion == jugador.ARRIBA)
-                    ataque.y -=35;
-                else if(jugador.orientacion == jugador.ABAJO)
-                    ataque.y +=35;
-                else if(jugador.orientacion == jugador.DERECHA)
-                    ataque.x+=35;
-                else if(jugador.orientacion == jugador.IZQUIERDA)
-                    ataque.x-=35;
+                if(jugador.getMunidion()>0) {
+                    DisparoJugador ataque = new DisparoJugador(context, jugador.x, jugador.y, jugador.orientacion, jugador.armaActual);
+                    if (jugador.orientacion == jugador.ARRIBA)
+                        ataque.y -= 25;
+                    else if (jugador.orientacion == jugador.ABAJO)
+                        ataque.y += 25;
+                    else if (jugador.orientacion == jugador.DERECHA)
+                        ataque.x += 25;
+                    else if (jugador.orientacion == jugador.IZQUIERDA)
+                        ataque.x -= 25;
 
-                disparosJugador.add(ataque);
+                    disparosJugador.add(ataque);
 
-                botonDispararPulsado = false;
+                } botonDispararPulsado = false;
             }
 
             jugador.actualizar(tiempo);
@@ -664,7 +668,7 @@ public class Nivel {
         for (Iterator<DisparoJugador> iterator = disparosJugador.iterator(); iterator.hasNext(); ) {
 
             DisparoJugador disparoJugador = iterator.next();
-            if (disparoJugador.tVidaMaximo <= disparoJugador.tVida) {
+            if (disparoJugador.tVida<=0) {
                 iterator.remove();
                 break;
             }
@@ -692,11 +696,22 @@ public class Nivel {
                 cofre.destruir();
                 if (cofre.tipoCofre == Cofre.COFRE_MEJORA_DISPARO) {
                     jugador.armaActual = TipoArmas.ARMA_DISTANCIA;
+                    jugador.municion+=10;
+                    texto = "+10 municion";
+                    textoPorMostrar=true;
                 }
                 else if (cofre.tipoCofre == Cofre.COFRE_VIDA) {
-                    jugador.vidas++;
+                    if(jugador.getVidas()<6) {
+                        jugador.vidas++;
+                        texto = "+1 Vida";
+                    }else{
+                        texto = "+0 Vidas (vida al maximo)";
+                    } textoPorMostrar=true;
+
                 }else if(cofre.tipoCofre == Cofre.COFRE_ESCUDO){
                     jugador.numeroEscudos++;
+                    texto = "+1 Escudo";
+                    textoPorMostrar=true;
                 }
             }
         }

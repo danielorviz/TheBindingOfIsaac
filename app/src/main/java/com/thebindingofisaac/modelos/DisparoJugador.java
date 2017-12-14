@@ -12,8 +12,8 @@ import com.thebindingofisaac.graficos.Sprite;
 public class DisparoJugador extends Modelo {
 
     private Sprite sprite;
-    public double velocidadX = 5;
-    public double velocidadY = 5;
+    public double velocidadX = 0;
+    public double velocidadY = 0;
 
     public float tVidaMaximo;
     public float tVida;
@@ -28,13 +28,18 @@ public class DisparoJugador extends Modelo {
     public DisparoJugador(Context context, double xInicial, double yInicial, int orientacion, String tipoArma) {
         super(context, xInicial, yInicial, 35, 35);
 
-        if (orientacion == Jugador.IZQUIERDA)
-            velocidadX = velocidadX*-1;
-        if (orientacion == Jugador.ABAJO)
-            velocidadY = velocidadY*-1;
+        if (orientacion == Jugador.IZQUIERDA) velocidadX = -8;
+        else if(orientacion ==Jugador.DERECHA ) velocidadX= 8;
+        else if (orientacion == Jugador.ABAJO) velocidadY=8;
+        else if(orientacion == Jugador.ARRIBA) velocidadY = -8;
 
-        cDerecha = 6;
-        cIzquierda = 6;
+        if(tipoArma==TipoArmas.ARMA_MELEE) {
+            cDerecha = 10;
+            cIzquierda = 10;
+        }else {
+            cDerecha = 6;
+            cIzquierda = 6;
+        }
         cArriba = 6;
         cAbajo = 6;
 
@@ -49,12 +54,12 @@ public class DisparoJugador extends Modelo {
                 CargadorGraficos.cargarDrawable(context,
                         R.drawable.animacion_disparo1),
                 ancho, altura,
-                25, 5, true);
+                25, 4, true);
 
         if(tipoArma== TipoArmas.ARMA_MELEE){
-            tVidaMaximo = 2f;
+            tVida = 500f;
         }else
-            tVidaMaximo= 100f;
+            tVida= 3000f;
     }
 
     public void rebotar(){
@@ -64,10 +69,10 @@ public class DisparoJugador extends Modelo {
         rebotando = true;
     }
     public void actualizar (long tiempo) {
-
         sprite.actualizar(tiempo);
-        if(tiempoInicial>0) tiempoInicial= tiempo;
-        tVida = tiempo-tiempoInicial;
+
+        if(tVida >0)
+            tVida-=tiempo;
     }
 
     public void dibujar(Canvas canvas){
