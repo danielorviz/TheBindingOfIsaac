@@ -76,10 +76,10 @@ public class EnemigoZombie extends Enemigo {
                 sprite = sprites.get(MUERTE_IZQUIERDA);
 
         } else {
-            if (velocidadX > 0) {
+            if (velocidadX >= 0) {
                 sprite = sprites.get(CAMINANDO_DERECHA);
             }
-            if (velocidadX < 0) {
+            else if (velocidadX < 0) {
                 sprite = sprites.get(CAMINANDO_IZQUIERDA);
             }
         }

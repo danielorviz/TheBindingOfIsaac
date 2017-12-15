@@ -60,7 +60,7 @@ public class Jugador extends Modelo {
 
     /// ESTADO ///
     int vidas = 6;
-    int municion=0;
+    int municion=5;
     boolean escudado =false;
     int numeroEscudos = 1;
     int msEscudadoMaximo = 5000;
@@ -168,7 +168,7 @@ public class Jugador extends Modelo {
                 12, 6, false);
         sprites.put(CABALLERO_MUERTE, caballerMuerte);
 
-// animación actual
+        // animación actual
         sprite = paradoDerecha;
 
         escudo = CargadorGraficos.cargarDrawable(context, R.drawable.sprshield);

@@ -44,6 +44,17 @@ public class EnemigoBoss extends Enemigo{
                 4, 4, true);
         sprites.put(CAMINANDO_IZQUIERDA, caminandoIzquierda);
 
+        Sprite caminandoAbajo = new Sprite(
+                CargadorGraficos.cargarDrawable(context, R.drawable.cababj),
+                ancho, altura,
+                4, 4, true);
+        sprites.put(CAMINANDO_ABAJO, caminandoAbajo);
+
+        Sprite caminandoArriba = new Sprite(
+                CargadorGraficos.cargarDrawable(context, R.drawable.cabarr),
+                ancho, altura,
+                4, 4, true);
+        sprites.put(CAMINANDO_ARRIBA, caminandoArriba);
 
         Sprite muerteDerecha = new Sprite(
                 CargadorGraficos.cargarDrawable(context, R.drawable.enemydieright),
@@ -76,8 +87,14 @@ public class EnemigoBoss extends Enemigo{
             if (velocidadX > 0) {
                 sprite = sprites.get(CAMINANDO_DERECHA);
             }
-            if (velocidadX < 0) {
+            else if (velocidadX < 0) {
                 sprite = sprites.get(CAMINANDO_IZQUIERDA);
+            }
+            else if (velocidadX == 0 && velocidadY > 0 ) {
+                sprite = sprites.get(CAMINANDO_ARRIBA);
+            }
+            else if (velocidadX == 0 && velocidadY < 0 ) {
+                sprite = sprites.get(CAMINANDO_ABAJO);
             }
         }
     }

@@ -18,6 +18,7 @@ import com.thebindingofisaac.modelos.enemigos.Bomba;
 import com.thebindingofisaac.modelos.enemigos.Enemigo;
 import com.thebindingofisaac.modelos.enemigos.EnemigoBomba;
 import com.thebindingofisaac.modelos.enemigos.EnemigoBoss;
+import com.thebindingofisaac.modelos.enemigos.EnemigoGrande;
 import com.thebindingofisaac.modelos.enemigos.EnemigoHormiga;
 import com.thebindingofisaac.modelos.enemigos.EnemigoZombie;
 
@@ -77,6 +78,7 @@ public class Nivel {
 
     int tiempoMovBomba = 0;
     public List<Bomba> bombasExplotadas;
+    int tiempoMovGrande = 0;
 
     public Nivel(Context context, int numeroNivel) throws Exception {
 
@@ -184,6 +186,8 @@ public class Nivel {
                 oleadas.get(numOleada).add(new EnemigoBomba(context, 0, 0));
             if (tipo.equals("H"))
                 oleadas.get(numOleada).add(new EnemigoHormiga(context, 0, 0));
+            if (tipo.equals("G"))
+                oleadas.get(numOleada).add(new EnemigoGrande(context, 0, 0));
        }
     }
 
@@ -235,6 +239,18 @@ public class Nivel {
                 int xCentroAbajoTileEB = x * Tile.ancho + Tile.ancho / 2;
                 int yCentroAbajoTileEB = y * Tile.altura + Tile.altura / 2;
                 enemigos.add(new EnemigoBomba(context, xCentroAbajoTileEB, yCentroAbajoTileEB));
+
+                if(n==1)
+                    return new Tile(CargadorGraficos.cargarDrawable(context, R.drawable.medievaltile_115)
+                            , Tile.PASABLE);
+                else
+                    return new Tile(CargadorGraficos.cargarDrawable(context, R.drawable.medievaltile_002)
+                            , Tile.PASABLE);
+            case 'G':
+                // EnemigoGrande
+                int xCentroAbajoTileEG = x * Tile.ancho + Tile.ancho / 2;
+                int yCentroAbajoTileEG = y * Tile.altura + Tile.altura / 2;
+                enemigos.add(new EnemigoGrande(context, xCentroAbajoTileEG, yCentroAbajoTileEG));
 
                 if(n==1)
                     return new Tile(CargadorGraficos.cargarDrawable(context, R.drawable.medievaltile_115)
@@ -617,14 +633,23 @@ public class Nivel {
                     enemigoBomba.colocarBomba();
                 }
             }
+            tiempoMovGrande++;
+            if(enemigo instanceof EnemigoGrande) {
+                EnemigoGrande enemigoGrande = (EnemigoGrande) enemigo;
+                if (enemigoGrande.movimientoAleatorio(tiempoMovGrande)) {
+                    tiempoMovGrande = 0;
+                    if (enemigoGrande.altura <= 80) {
+                        enemigoGrande.altura = enemigoGrande.altura + 5;
+                        enemigoGrande.ancho = enemigoGrande.ancho + 5;
+                        enemigoGrande.inicializar();
+                    }
+                }
+            }
             if(enemigo instanceof  EnemigoBoss){
                 EnemigoBoss enemigoBoss = (EnemigoBoss)enemigo;
                 enemigoBoss.moverseHaciaJugador(jugador.x,jugador.y);
             }
-
-
         }
-
 
         // Hacia abajo
         if (jugador.velocidadY < 0) {

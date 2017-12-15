@@ -8,33 +8,26 @@ import com.thebindingofisaac.gestores.CargadorGraficos;
 import com.thebindingofisaac.graficos.Sprite;
 import com.thebindingofisaac.modelos.Nivel;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Random;
 
 /**
- * Created by Darío on 13/12/2017.
+ * Created by user on 15/12/2017.
  */
 
-public class EnemigoBomba extends Enemigo {
-
+public class EnemigoGrande extends Enemigo {
 
     private Sprite sprite;
     private HashMap<String,Sprite> sprites = new HashMap<String,Sprite>();
 
-    public List<Bomba> bombas;
-    public int radioExplosion = 100;
+    public TipoEnemigo tipo=TipoEnemigo.GRANDE;
 
-    public TipoEnemigo tipo=TipoEnemigo.BOMBA;
 
-    public EnemigoBomba(Context context, double xInicial, double yInicial) {
-        super(context, xInicial, yInicial, 44, 33);
+    public EnemigoGrande(Context context, double xInicial, double yInicial) {
+        super(context, xInicial, yInicial, 40, 40);
 
-        velocidadX = 0.5;
-        velocidadY = 0.5;
-
-        bombas = new ArrayList<Bomba>();
+        velocidadX = 0.4;
+        velocidadY = 0.4;
 
         inicializar();
     }
@@ -42,29 +35,16 @@ public class EnemigoBomba extends Enemigo {
     public void inicializar (){
 
         Sprite caminandoDerecha = new Sprite(
-                CargadorGraficos.cargarDrawable(context, R.drawable.enemigo_bomba_derecha),
+                CargadorGraficos.cargarDrawable(context, R.drawable.enemyrunright),
                 ancho, altura,
-                4, 3, true);
+                4, 4, true);
         sprites.put(CAMINANDO_DERECHA, caminandoDerecha);
 
         Sprite caminandoIzquierda = new Sprite(
-                CargadorGraficos.cargarDrawable(context, R.drawable.enemigo_bomba_izquierda),
+                CargadorGraficos.cargarDrawable(context, R.drawable.enemyrunleft),
                 ancho, altura,
-                4, 3, true);
+                4, 4, true);
         sprites.put(CAMINANDO_IZQUIERDA, caminandoIzquierda);
-
-        Sprite caminandoAbajo = new Sprite(
-                CargadorGraficos.cargarDrawable(context, R.drawable.enemigo_bomba_abajo),
-                ancho, altura,
-                4, 3, true);
-        sprites.put(CAMINANDO_ABAJO, caminandoAbajo);
-
-        Sprite caminandoArriba = new Sprite(
-                CargadorGraficos.cargarDrawable(context, R.drawable.enemigo_bomba_arriba),
-                ancho, altura,
-                4, 3, true);
-        sprites.put(CAMINANDO_ARRIBA, caminandoArriba);
-
 
         Sprite muerteDerecha = new Sprite(
                 CargadorGraficos.cargarDrawable(context, R.drawable.enemydieright),
@@ -96,17 +76,11 @@ public class EnemigoBomba extends Enemigo {
                 sprite = sprites.get(MUERTE_IZQUIERDA);
 
         } else {
-            if (velocidadX > 0) {
+            if (velocidadX >= 0) {
                 sprite = sprites.get(CAMINANDO_DERECHA);
             }
             else if (velocidadX < 0) {
                 sprite = sprites.get(CAMINANDO_IZQUIERDA);
-            }
-            else if (velocidadX == 0 && velocidadY > 0 ) {
-                sprite = sprites.get(CAMINANDO_ARRIBA);
-            }
-            else if (velocidadX == 0 && velocidadY < 0 ) {
-                sprite = sprites.get(CAMINANDO_ABAJO);
             }
         }
     }
@@ -119,36 +93,18 @@ public class EnemigoBomba extends Enemigo {
 
             if (mov == 0) {
                 girarX();
-                velocidadX = velocidadX + 0.1;
+                velocidadX = velocidadX + 0.05;
             } else if (mov == 1) {
                 girarY();
-                velocidadY = velocidadY + 0.1;
+                velocidadY = velocidadY + 0.05;
             }
             return true;
         }
         return false;
     }
 
-    public void girarX(){
-        velocidadX = velocidadX*-1;
-    }
-
-    public void girarY(){
-        velocidadY = velocidadY*-1;
-    }
-
-
-    public void colocarBomba() {
-        Bomba bomba = new Bomba(context, x, y);
-        bombas.add(bomba);
-    }
-
     public void dibujar(Canvas canvas){
         sprite.dibujarSprite(canvas, (int) x - Nivel.scrollEjeX, (int) y - Nivel.scrollEjeY);
-
-        for (Bomba bomba : bombas) {
-            bomba.dibujar(canvas);
-        }
     }
 
 }
