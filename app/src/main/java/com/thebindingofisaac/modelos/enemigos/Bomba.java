@@ -14,10 +14,6 @@ import com.thebindingofisaac.modelos.Nivel;
 
 public class Bomba extends Modelo {
 
-    public int estado = ACTIVO;
-    public static final int ACTIVO = 1;
-    public static final int EXPLOTADA = -1;
-
     public int radioExplosion = 50;
 
     public Bomba(Context context, double x, double y) {
@@ -38,6 +34,5 @@ public class Bomba extends Modelo {
 
     public void explotar() {
         imagen = CargadorGraficos.cargarDrawable(context, R.drawable.hole_dirt);
-        estado = EXPLOTADA;
     }
 }
