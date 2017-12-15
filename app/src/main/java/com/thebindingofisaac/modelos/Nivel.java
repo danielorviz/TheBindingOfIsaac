@@ -14,6 +14,7 @@ import com.thebindingofisaac.gestores.GestorAudio;
 import com.thebindingofisaac.gestores.ParserXML;
 import com.thebindingofisaac.gestores.Utilidades;
 import com.thebindingofisaac.global.TipoArmas;
+import com.thebindingofisaac.modelos.enemigos.Bomba;
 import com.thebindingofisaac.modelos.enemigos.Enemigo;
 import com.thebindingofisaac.modelos.enemigos.EnemigoBomba;
 import com.thebindingofisaac.modelos.enemigos.EnemigoBoss;
@@ -75,6 +76,7 @@ public class Nivel {
     public boolean nivelPerdido;
 
     int tiempoMovBomba = 0;
+    public List<Bomba> bombasExplotadas;
 
     public Nivel(Context context, int numeroNivel) throws Exception {
 
@@ -97,6 +99,7 @@ public class Nivel {
         spawns = new ArrayList<Spawn>();
         oleadas = new HashMap<Integer, LinkedList<Enemigo>>();
         destructibles = new LinkedList<BloqueDestructible>() ;
+        bombasExplotadas = new ArrayList<Bomba>();
         oleadaActual =0;
         msTotalProximaOleada=5000;
         fondo = new Fondo(context,CargadorGraficos.cargarBitmap(context,
@@ -590,8 +593,29 @@ public class Nivel {
             tiempoMovBomba++;
             if (enemigo instanceof EnemigoBomba) {
                 EnemigoBomba enemigoBomba = (EnemigoBomba) enemigo;
-                if (enemigoBomba.movimientoAleatorio(tiempoMovBomba))
+                if (enemigoBomba.movimientoAleatorio(tiempoMovBomba)) {
                     tiempoMovBomba = 0;
+                    for (Bomba bomba : enemigoBomba.bombas) {
+                        bomba.explotar();
+                       if (jugador.x >= bomba.x - bomba.radioExplosion && jugador.x <= bomba.x + bomba.radioExplosion
+                                && jugador.y >= bomba.y - bomba.radioExplosion && jugador.y <= bomba.y + bomba.radioExplosion) {
+                           if (jugador.golpeado() <= 0) {
+
+                               nivelPausado = true;
+                               nivelPerdido = true;
+
+                               mensaje = CargadorGraficos.cargarBitmap(context, R.drawable.you_lose);
+                               jugador.restablecerPosicionInicial();
+
+                               scrollEjeX = 0;
+                               return;
+                           }
+                        }
+                        bombasExplotadas.add(bomba);
+                        enemigoBomba.bombas.remove(bomba);
+                    }
+                    enemigoBomba.colocarBomba();
+                }
             }
             if(enemigo instanceof  EnemigoBoss){
                 EnemigoBoss enemigoBoss = (EnemigoBoss)enemigo;
@@ -842,6 +866,10 @@ public class Nivel {
             fondo.dibujar(canvas);
 
             dibujarTiles(canvas);
+
+            for(Bomba bombaExplotada : bombasExplotadas) {
+                bombaExplotada.dibujar(canvas);
+            }
 
             for(Spawn sp: spawns){
                 sp.dibujar(canvas);

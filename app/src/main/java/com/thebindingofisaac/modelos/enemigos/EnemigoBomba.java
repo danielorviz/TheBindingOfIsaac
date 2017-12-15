@@ -23,9 +23,7 @@ public class EnemigoBomba extends Enemigo {
     private Sprite sprite;
     private HashMap<String,Sprite> sprites = new HashMap<String,Sprite>();
 
-    private List<Bomba> bombas;
-
-    public long tiempoBomba = 0;
+    public List<Bomba> bombas;
     public int radioExplosion = 100;
 
     public TipoEnemigo tipo=TipoEnemigo.BOMBA;
@@ -111,15 +109,6 @@ public class EnemigoBomba extends Enemigo {
                 sprite = sprites.get(CAMINANDO_ABAJO);
             }
         }
-
-        if (this.tiempoBomba == 0) {
-            tiempoBomba = System.currentTimeMillis();
-        }
-
-        for (Bomba bomba : bombas) {
-            if (bomba.tiempoExplosion == 0)
-                bomba.tiempoExplosion = System.currentTimeMillis();
-        }
     }
 
     public boolean movimientoAleatorio(int tiempo) {
@@ -138,19 +127,6 @@ public class EnemigoBomba extends Enemigo {
             return true;
         }
         return false;
-
-/*        long tiempoActual = System.currentTimeMillis();
-
-        if (this.tiempoBomba != 0 && (tiempoActual - tiempoBomba) > 5000) {
-            this.tiempoBomba = 0;
-            colocarBomba();
-        }
-        for (Bomba bomba : bombas) {
-            if (bomba.tiempoExplosion != 0 && (tiempoActual - bomba.tiempoExplosion) > 4000) {
-                bomba.explotar();
-                bombas.remove(bomba);
-            }
-        }*/
     }
 
     public void girarX(){
@@ -163,7 +139,6 @@ public class EnemigoBomba extends Enemigo {
 
 
     public void colocarBomba() {
-
         Bomba bomba = new Bomba(context, x, y);
         bombas.add(bomba);
     }
@@ -171,9 +146,9 @@ public class EnemigoBomba extends Enemigo {
     public void dibujar(Canvas canvas){
         sprite.dibujarSprite(canvas, (int) x - Nivel.scrollEjeX, (int) y - Nivel.scrollEjeY);
 
-//        for (Bomba bomba : bombas) {
-//            bomba.dibujar(canvas);
-//        }
+        for (Bomba bomba : bombas) {
+            bomba.dibujar(canvas);
+        }
     }
 
 }

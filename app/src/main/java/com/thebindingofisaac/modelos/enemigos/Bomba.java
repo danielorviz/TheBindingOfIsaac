@@ -18,7 +18,7 @@ public class Bomba extends Modelo {
     public static final int ACTIVO = 1;
     public static final int EXPLOTADA = -1;
 
-    public long tiempoExplosion = 0;
+    public int radioExplosion = 50;
 
     public Bomba(Context context, double x, double y) {
         super(context, x, y, 30,30);
