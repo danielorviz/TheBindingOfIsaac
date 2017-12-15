@@ -15,6 +15,7 @@ import com.thebindingofisaac.gestores.Utilidades;
 import com.thebindingofisaac.global.TipoArmas;
 import com.thebindingofisaac.modelos.enemigos.Enemigo;
 import com.thebindingofisaac.modelos.enemigos.EnemigoBomba;
+import com.thebindingofisaac.modelos.enemigos.EnemigoBoss;
 import com.thebindingofisaac.modelos.enemigos.EnemigoHormiga;
 import com.thebindingofisaac.modelos.enemigos.EnemigoZombie;
 
@@ -101,6 +102,14 @@ public class Nivel {
 
         inicializarMapaTiles();
         cargarEnemigosXML(context);
+
+// en el nivel final solo habra un enemigo, el boss, por eso size==1
+        // se le asigna al juador al menos 5 balas para que acabe con el
+        if(enemigos.size()==1){
+            if(enemigos.get(0) instanceof EnemigoBoss){
+                jugador.municion=5;
+            }
+        }
     }
 
     private void inicializarMapaTiles() throws Exception {
@@ -220,6 +229,18 @@ public class Nivel {
                 int xCentroAbajoTileEB = x * Tile.ancho + Tile.ancho / 2;
                 int yCentroAbajoTileEB = y * Tile.altura + Tile.altura / 2;
                 enemigos.add(new EnemigoBomba(context, xCentroAbajoTileEB, yCentroAbajoTileEB));
+
+                if(n==1)
+                    return new Tile(CargadorGraficos.cargarDrawable(context, R.drawable.medievaltile_115)
+                            , Tile.PASABLE);
+                else
+                    return new Tile(CargadorGraficos.cargarDrawable(context, R.drawable.medievaltile_002)
+                            , Tile.PASABLE);
+            case 'J':
+                // EnemigoBoss
+                int xCentroAbajoTileEJ = x * Tile.ancho + Tile.ancho / 2;
+                int yCentroAbajoTileEJ = y * Tile.altura + Tile.altura / 2;
+                enemigos.add(new EnemigoBoss(context, xCentroAbajoTileEJ, yCentroAbajoTileEJ));
 
                 if(n==1)
                     return new Tile(CargadorGraficos.cargarDrawable(context, R.drawable.medievaltile_115)
@@ -429,7 +450,7 @@ public class Nivel {
                 }
             }
             if(enemigo instanceof EnemigoHormiga &&
-                    mapaTiles[tileXEnemigoCentro][tileXEnemigoCentro].tipoDeColision == Tile.SOLIDO){
+                    mapaTiles[tileXEnemigoCentro][tileYEnemigoCentro].tipoDeColision == Tile.SOLIDO){
                 enemigo.destruir();
                 
             }
@@ -570,9 +591,14 @@ public class Nivel {
             if (enemigo instanceof EnemigoZombie) {
                 EnemigoZombie enemigoZombie = (EnemigoZombie) enemigo;
                 enemigoZombie.moverseHaciaJugador(jugador.x,jugador.y);
-            }  if (enemigo instanceof EnemigoHormiga) {
+            }
+            if (enemigo instanceof EnemigoHormiga) {
                 EnemigoHormiga enemigoHormiga = (EnemigoHormiga) enemigo;
                 enemigoHormiga.moverseHaciaJugador(jugador.x,jugador.y);
+            }
+            if(enemigo instanceof  EnemigoBoss){
+                EnemigoBoss enemigoBoss = (EnemigoBoss)enemigo;
+                enemigoBoss.moverseHaciaJugador(jugador.x,jugador.y);
             }
 
             Log.i("posicion_enemigo", "xcentro: " + tileXEnemigoCentro + " ycentro: " + tileYEnemigoCentro +
@@ -759,6 +785,7 @@ public class Nivel {
             for (Enemigo enemigo : enemigos) {
                 if (disparoJugador.colisiona(enemigo)) {
                     if (enemigo.estado != Enemigo.INACTIVO)
+
                         if (enemigo instanceof EnemigoHormiga) {
                             if(((EnemigoHormiga) enemigo).divisiones >0){
 
@@ -770,7 +797,16 @@ public class Nivel {
                                 enemigos.add(aux2);
                             }
                         }
-                        enemigo.destruir();
+                        if(enemigo instanceof EnemigoBoss){
+                            EnemigoBoss enemigoBoss = (EnemigoBoss)enemigo;
+                            enemigoBoss.setVidas(enemigoBoss.getVidas()-1);
+                        }
+                        if(!(enemigo instanceof EnemigoBoss)){
+                            enemigo.destruir();
+                        }else if(((EnemigoBoss) enemigo).getVidas()==0){
+                            enemigo.destruir();
+                        }
+
                     iterator.remove();
                     break;
                 }

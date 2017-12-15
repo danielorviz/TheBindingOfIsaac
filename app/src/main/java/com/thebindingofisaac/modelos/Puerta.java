@@ -17,11 +17,11 @@ public class Puerta extends Modelo {
     private boolean activa;
 
     public Puerta(Context context, double x, double y, int id) {
-        super(context, x, y, 80, 40);
+        super(context, x, y, 70, 70);
         this.y =  y - altura/2;
         this.id=id;
         this.activa=false;
-        imagen = CargadorGraficos.cargarDrawable(context, R.drawable.door_closed_top);
+        imagen = CargadorGraficos.cargarDrawable(context, R.drawable.medievaltile_055);
     }
 
     @Override
