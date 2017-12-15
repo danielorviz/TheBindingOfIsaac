@@ -214,7 +214,6 @@ public class Jugador extends Modelo {
     }
 
     public void actualizar (long tiempo) {
-        Log.i("JUGADOR", " - INVENTARIO: *Escudos (" + numeroEscudos + " ) *Municion() ");
 
         if(msInmunidad > 0){
             msInmunidad -= tiempo;
@@ -285,7 +284,6 @@ public class Jugador extends Modelo {
 
     public void dibujar(Canvas canvas){
         if(escudado){
-            Log.i("JUGADOR", "() ESCUDANDOSE   ");
             escudo.setAlpha(150);
             escudo.setBounds((int)x-40 - Nivel.scrollEjeX, (int)y-30- Nivel.scrollEjeY, (int)x+40 - Nivel.scrollEjeX, (int)y+30- Nivel.scrollEjeY);
             escudo.draw(canvas);

@@ -86,7 +86,6 @@ public class EnemigoZombie extends Enemigo {
     }
 
     public void moverseHaciaJugador(double jugadorX,double jugadorY){
-        //Log.i("posicionesC","enemigo y "+ y + " x "+x+ "juga x "+jugadorX + " jugay "+jugadorY);
 
         if(x==jugadorX){
             if(y< jugadorY && velocidadY<0) {

@@ -14,10 +14,12 @@ public class BloqueDestructible extends Modelo {
 
 
     boolean destruido;
+    int xTile;
+    int yTile;
 
     public BloqueDestructible(Context context, double x, double y){
         super(context, x, y, 35, 35);
-        this.y = y - altura/2;
+
 
         imagen = CargadorGraficos.cargarDrawable(context, R.drawable.medievaltile_208);
     }
