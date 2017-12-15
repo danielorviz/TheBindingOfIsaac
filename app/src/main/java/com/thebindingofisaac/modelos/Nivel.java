@@ -74,6 +74,8 @@ public class Nivel {
     public boolean nivelPausado;
     public boolean nivelPerdido;
 
+    int tiempoMovBomba = 0;
+
     public Nivel(Context context, int numeroNivel) throws Exception {
 
         inicializado = false;
@@ -583,7 +585,13 @@ public class Nivel {
             }
             if (enemigo instanceof EnemigoHormiga) {
                 EnemigoHormiga enemigoHormiga = (EnemigoHormiga) enemigo;
-                enemigoHormiga.moverseHaciaJugador(jugador.x,jugador.y);
+                enemigoHormiga.moverseHaciaJugador(jugador.x, jugador.y);
+            }
+            tiempoMovBomba++;
+            if (enemigo instanceof EnemigoBomba) {
+                EnemigoBomba enemigoBomba = (EnemigoBomba) enemigo;
+                if (enemigoBomba.movimientoAleatorio(tiempoMovBomba))
+                    tiempoMovBomba = 0;
             }
             if(enemigo instanceof  EnemigoBoss){
                 EnemigoBoss enemigoBoss = (EnemigoBoss)enemigo;

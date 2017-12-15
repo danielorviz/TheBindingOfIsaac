@@ -33,8 +33,8 @@ public class EnemigoBomba extends Enemigo {
     public EnemigoBomba(Context context, double xInicial, double yInicial) {
         super(context, xInicial, yInicial, 44, 33);
 
-        velocidadX = 1.6;
-        velocidadY = 1.6;
+        velocidadX = 0.5;
+        velocidadY = 0.5;
 
         bombas = new ArrayList<Bomba>();
 
@@ -122,19 +122,24 @@ public class EnemigoBomba extends Enemigo {
         }
     }
 
-    public void movimientoAleatorio() {
+    public boolean movimientoAleatorio(int tiempo) {
 
-        Random r = new Random();
-        int mov = r.nextInt(2);
+        if (tiempo > 300) {
+            Random r = new Random();
+            int mov = r.nextInt(2);
 
-        if (mov == 0) {
-            girarX();
+            if (mov == 0) {
+                girarX();
+                velocidadX = velocidadX + 0.1;
+            } else if (mov == 1) {
+                girarY();
+                velocidadY = velocidadY + 0.1;
+            }
+            return true;
         }
-        else if (mov == 1) {
-            girarY();
-        }
+        return false;
 
-        long tiempoActual = System.currentTimeMillis();
+/*        long tiempoActual = System.currentTimeMillis();
 
         if (this.tiempoBomba != 0 && (tiempoActual - tiempoBomba) > 5000) {
             this.tiempoBomba = 0;
@@ -145,7 +150,7 @@ public class EnemigoBomba extends Enemigo {
                 bomba.explotar();
                 bombas.remove(bomba);
             }
-        }
+        }*/
     }
 
     public void girarX(){
