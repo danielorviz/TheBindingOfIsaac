@@ -13,6 +13,10 @@ import java.util.HashMap;
 
 public class GestorAudio implements MediaPlayer.OnPreparedListener {
 
+    public static final int SONIDO_DISPARO_JUGADOR = 1;
+    public static final int SONIDO_RECOLECTAR = 2;
+    public static final int SONIDO_ENEMIGO_HIT = 3;
+    public static final int SONIDO_PUERTA_OPEN = 4;
 
 
     private SoundPool poolSonidos;

@@ -60,6 +60,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback  {
         gameloop.setRunning(true);
 
 
+
     }
 
 
@@ -67,6 +68,14 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback  {
       // gestorAudio = GestorAudio.getInstancia(context,R.raw.m_fondo )
         // gestorAudio.reproducirMusicaAmbiente();/
      //   gestorAudio.registrarSonido(GestorAudio.SONIDO_ZOMBIE, R.raw.zombie);
+        gestorAudio=GestorAudio.getInstancia(context,R.raw.suspend);
+        gestorAudio.reproducirMusicaAmbiente();
+
+        gestorAudio.registrarSonido(GestorAudio.SONIDO_DISPARO_JUGADOR,R.raw.disparo_jugador);
+        gestorAudio.registrarSonido(GestorAudio.SONIDO_ENEMIGO_HIT,R.raw.enemigo_hit);
+        gestorAudio.registrarSonido(GestorAudio.SONIDO_PUERTA_OPEN,R.raw.opening_door);
+        gestorAudio.registrarSonido(GestorAudio.SONIDO_RECOLECTAR,R.raw.recolectado);
+
     }
 
 

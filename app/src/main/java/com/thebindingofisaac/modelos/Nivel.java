@@ -10,6 +10,7 @@ import android.util.Log;
 import com.thebindingofisaac.GameView;
 import com.thebindingofisaac.R;
 import com.thebindingofisaac.gestores.CargadorGraficos;
+import com.thebindingofisaac.gestores.GestorAudio;
 import com.thebindingofisaac.gestores.ParserXML;
 import com.thebindingofisaac.gestores.Utilidades;
 import com.thebindingofisaac.global.TipoArmas;
@@ -357,6 +358,7 @@ public class Nivel {
             }
             if (botonDispararPulsado) {
                 if(jugador.getMunicion()>0 || jugador.armaActual == TipoArmas.ARMA_MELEE) {
+                    GestorAudio.getInstancia().reproducirSonido(GestorAudio.SONIDO_DISPARO_JUGADOR);
 
                     DisparoJugador ataque = new DisparoJugador(context, jugador.x, jugador.y, jugador.orientacion, jugador.armaActual);
                     if (jugador.orientacion == jugador.ARRIBA)
@@ -435,6 +437,7 @@ public class Nivel {
 
                 if (jugador.colisiona(enemigo)) {
                     if(!jugador.escudado) {
+
                         if (jugador.golpeado() <= 0) {
 
                             nivelPausado = true;
@@ -785,8 +788,9 @@ public class Nivel {
             for (Enemigo enemigo : enemigos) {
                 if (disparoJugador.colisiona(enemigo)) {
                     if (enemigo.estado != Enemigo.INACTIVO)
+                        GestorAudio.getInstancia().reproducirSonido(GestorAudio.SONIDO_ENEMIGO_HIT);
 
-                        if (enemigo instanceof EnemigoHormiga) {
+                    if (enemigo instanceof EnemigoHormiga) {
                             if(((EnemigoHormiga) enemigo).divisiones >0){
 
                                 EnemigoHormiga aux1 = new EnemigoHormiga(context, enemigo.x+30, enemigo.y+30);
@@ -819,6 +823,7 @@ public class Nivel {
                 continue;
             }
             if (jugador.colisiona(cofre) && cofre.estado == Cofre.ACTIVO ) {
+                GestorAudio.getInstancia().reproducirSonido(GestorAudio.SONIDO_RECOLECTAR);
                 cofre.destruir();
                 if (cofre.tipoCofre == Cofre.COFRE_MEJORA_DISPARO) {
                     jugador.armaActual = TipoArmas.ARMA_DISTANCIA;
@@ -866,6 +871,7 @@ public class Nivel {
                 puerta.dibujar(canvas);
                 if(!puerta.isActiva()){
                     puerta.setActiva(true);
+                    GestorAudio.getInstancia().reproducirSonido(GestorAudio.SONIDO_PUERTA_OPEN);
                 }
 
             }else{

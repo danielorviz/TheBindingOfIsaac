@@ -7,6 +7,7 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.thebindingofisaac.gestores.GestorAudio;
+import com.thebindingofisaac.modelos.Nivel;
 
 public class MainActivity extends Activity {
     GameView gameView = null;
@@ -54,5 +55,12 @@ public class MainActivity extends Activity {
             gameView.gameloop.setRunning(false);
             gameView = null;
         }
+    }
+    @Override
+    protected void onResume() {
+        if (GestorAudio.getInstancia() != null){
+            GestorAudio.getInstancia().reproducirMusicaAmbiente();
+        }
+        super.onResume();
     }
 }
