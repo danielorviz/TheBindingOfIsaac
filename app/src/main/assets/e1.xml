@@ -1,13 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<level id="1">
+<level id="2">
     <enemies>
+        <enemy>
+            <round>1</round>
+            <type>B</type>
+        </enemy>
         <enemy>
             <round>1</round>
             <type>H</type>
         </enemy>
         <enemy>
-            <round>1</round>
-            <type>H</type>
+            <round>2</round>
+            <type>Z</type>
+        </enemy>
+        <enemy>
+            <round>3</round>
+            <type>Z</type>
         </enemy>
     </enemies>
 </level>

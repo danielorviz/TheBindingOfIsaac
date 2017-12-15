@@ -24,14 +24,14 @@ public class EnemigoHormiga extends Enemigo {
     public EnemigoHormiga(Context context, double xInicial, double yInicial) {
         super(context, xInicial, yInicial, 30, 45);
 
-        velocidadX = 0.8;
-        velocidadY = 0.8;
+        velocidadX = 1;
+        velocidadY = 1;
 
         if(divisiones==0){
             ancho=35;
             altura=20;
-            velocidadX=1;
-            velocidadY=1;
+            velocidadX=1.5;
+            velocidadY=1.5;
         }
 
         inicializar();

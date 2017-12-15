@@ -59,9 +59,9 @@ public class Nivel {
     public List<Cofre> cofres;
     public HashMap<Integer, LinkedList<Enemigo>> oleadas;
     public List<Spawn> spawns;
-    float msTotalProximaOleada=5000;
-    float msRestantesParaOleada=5000;
-    int ronda = 0; //oleada actual
+    float msTotalProximaOleada=8000;
+    float msRestantesParaOleada=8000;
+    int oleadaActual = 0;
 
     //string texto sobre inventario
     public String texto;
@@ -95,7 +95,7 @@ public class Nivel {
         spawns = new ArrayList<Spawn>();
         oleadas = new HashMap<Integer, LinkedList<Enemigo>>();
         destructibles = new LinkedList<BloqueDestructible>() ;
-        ronda=0;
+        oleadaActual =0;
         msTotalProximaOleada=5000;
         fondo = new Fondo(context,CargadorGraficos.cargarBitmap(context,
                 R.drawable.fondo_gris), 0);
@@ -460,14 +460,10 @@ public class Nivel {
 
             if(enemigo.velocidadX > 0){
                 //  Solo una condicion para pasar:  Tile delante libre, el de abajo solido
-                if (tileXEnemigoDerecha + 1 <= anchoMapaTiles() - 1 &&
-                        mapaTiles[tileXEnemigoDerecha + 1][tileYEnemigoInferior].tipoDeColision ==
-                                Tile.PASABLE &&
-                        mapaTiles[tileXEnemigoDerecha + 1][tileYEnemigoCentro].tipoDeColision ==
-                                Tile.PASABLE &&
-                        mapaTiles[tileXEnemigoDerecha + 1][tileYEnemigoSuperior].tipoDeColision ==
-                                Tile.PASABLE
-                       // && mapaTiles[tileXEnemigoDerecha + 1][tileYEnemigoInferior + 1].tipoDeColision == Tile.PASABLE
+                if (tileXEnemigoDerecha + 1 <= anchoMapaTiles() - 1
+                        && mapaTiles[tileXEnemigoDerecha + 1][tileYEnemigoInferior].tipoDeColision == Tile.PASABLE
+                        && mapaTiles[tileXEnemigoDerecha + 1][tileYEnemigoCentro].tipoDeColision == Tile.PASABLE
+                        && mapaTiles[tileXEnemigoDerecha + 1][tileYEnemigoSuperior].tipoDeColision == Tile.PASABLE
                     ) {
 
                     //enemigoZombie.moverseHaciaJugador(jugador.x,jugador.y);
@@ -495,16 +491,11 @@ public class Nivel {
 
             if(enemigo.velocidadX < 0){
                 // Solo una condición para pasar: Tile izquierda pasable y suelo solido.
-                if (tileXEnemigoIzquierda - 1 >= 0 &&
-                        mapaTiles[tileXEnemigoIzquierda-1][tileYEnemigoInferior].tipoDeColision ==
-                                Tile.PASABLE &&
-                        mapaTiles[tileXEnemigoIzquierda-1][tileYEnemigoCentro].tipoDeColision ==
-                                Tile.PASABLE &&
-                        mapaTiles[tileXEnemigoIzquierda-1][tileYEnemigoSuperior].tipoDeColision ==
-                                Tile.PASABLE
-                        //&& mapaTiles[tileXEnemigoIzquierda-1][tileYEnemigoInferior +1].tipoDeColision == Tile.PASABLE
-                        &&
-                        mapaTiles[tileXEnemigoCentro][tileYEnemigoCentro].tipoDeColision==Tile.PASABLE) {
+                if (tileXEnemigoIzquierda - 1 >= 0
+                        && mapaTiles[tileXEnemigoIzquierda-1][tileYEnemigoInferior].tipoDeColision == Tile.PASABLE
+                        && mapaTiles[tileXEnemigoIzquierda-1][tileYEnemigoCentro].tipoDeColision == Tile.PASABLE
+                        && mapaTiles[tileXEnemigoIzquierda-1][tileYEnemigoSuperior].tipoDeColision == Tile.PASABLE
+                        && mapaTiles[tileXEnemigoCentro][tileYEnemigoCentro].tipoDeColision==Tile.PASABLE) {
 
                     //enemigoZombie.moverseHaciaJugador(jugador.x,jugador.y);
                     enemigo.x += enemigo.velocidadX;
@@ -529,15 +520,12 @@ public class Nivel {
 
             if(enemigo.velocidadY < 0) {
                 // Solo una condición para pasar: Tile izquierda pasable y suelo solido.
-                if (tileYEnemigoSuperior - 1 >= 0 &&
-                        mapaTiles[tileXEnemigoIzquierda][tileYEnemigoSuperior-1].tipoDeColision
-                                == Tile.PASABLE
-                        && mapaTiles[tileXEnemigoDerecha][tileYEnemigoSuperior-1].tipoDeColision
-                        == Tile.PASABLE &&
-                        mapaTiles[tileXEnemigoIzquierda][tileYEnemigoSuperior].tipoDeColision
-                        == Tile.PASABLE
-                        && mapaTiles[tileXEnemigoDerecha][tileYEnemigoSuperior].tipoDeColision
-                        == Tile.PASABLE && mapaTiles[tileXEnemigoCentro][tileYEnemigoSuperior-1].tipoDeColision ==Tile.PASABLE){
+                if (tileYEnemigoSuperior - 1 >= 0
+                        && mapaTiles[tileXEnemigoIzquierda][tileYEnemigoSuperior-1].tipoDeColision == Tile.PASABLE
+                        && mapaTiles[tileXEnemigoDerecha][tileYEnemigoSuperior-1].tipoDeColision == Tile.PASABLE
+                        && mapaTiles[tileXEnemigoIzquierda][tileYEnemigoSuperior].tipoDeColision == Tile.PASABLE
+                        && mapaTiles[tileXEnemigoDerecha][tileYEnemigoSuperior].tipoDeColision == Tile.PASABLE
+                        && mapaTiles[tileXEnemigoCentro][tileYEnemigoSuperior-1].tipoDeColision ==Tile.PASABLE){
                     //enemigoZombie.moverseHaciaJugador(jugador.x,jugador.y);
                     enemigo.y += enemigo.velocidadY;
 
@@ -563,8 +551,6 @@ public class Nivel {
                 // Solo una condición para pasar: Tile izquierda pasable y suelo solido.
                 if (tileYEnemigoInferior + 1 <= altoMapaTiles() - 1
                         && mapaTiles[tileXEnemigoIzquierda][tileYEnemigoInferior].tipoDeColision == Tile.PASABLE
-                        && mapaTiles[tileXEnemigoIzquierda][tileYEnemigoInferior].tipoDeColision == Tile.PASABLE
-                        && mapaTiles[tileXEnemigoDerecha][tileYEnemigoInferior].tipoDeColision == Tile.PASABLE
                         && mapaTiles[tileXEnemigoDerecha][tileYEnemigoInferior].tipoDeColision == Tile.PASABLE
                         ) {
 
@@ -604,14 +590,8 @@ public class Nivel {
                 enemigoBoss.moverseHaciaJugador(jugador.x,jugador.y);
             }
 
-            Log.i("posicion_enemigo", "xcentro: " + tileXEnemigoCentro + " ycentro: " + tileYEnemigoCentro +
-                    " xder: " + tileXEnemigoDerecha + " xizq: " + tileXEnemigoIzquierda
-                    + " ysup: " + tileYEnemigoSuperior + " yinf: " + tileYEnemigoInferior);
-        }
 
-        Log.i("posicion", "xcentro: " + tileXJugador + " ycentro: " + tileYJugadorCentro +
-                " xder: " + tileXJugadorDerecha + " xizq: " + tileXJugadorIzquierda
-                + "ysup: " + tileYJugadorSuperior + " yinf: " + tileYJugadorInferior);
+        }
 
 
         // Hacia abajo
@@ -791,10 +771,10 @@ public class Nivel {
                         GestorAudio.getInstancia().reproducirSonido(GestorAudio.SONIDO_ENEMIGO_HIT);
 
                     if (enemigo instanceof EnemigoHormiga) {
-                            if(((EnemigoHormiga) enemigo).divisiones >0){
+                            if(((EnemigoHormiga) enemigo).divisiones >0 && enemigo.estado != Enemigo.INACTIVO){
 
-                                EnemigoHormiga aux1 = new EnemigoHormiga(context, enemigo.x+30, enemigo.y+30);
-                                EnemigoHormiga aux2 = new EnemigoHormiga(context, enemigo.x-30, enemigo.y-30);
+                                EnemigoHormiga aux1 = new EnemigoHormiga(context, enemigo.x+20, enemigo.y+30);
+                                EnemigoHormiga aux2 = new EnemigoHormiga(context, enemigo.x-20, enemigo.y-30);
                                 aux1.divisiones= ((EnemigoHormiga) enemigo).divisiones-1;
                                 aux2.divisiones= ((EnemigoHormiga) enemigo).divisiones-1;
                                 enemigos.add(aux1);
@@ -848,10 +828,6 @@ public class Nivel {
         }
 
     }
-
-
-
-
     public void dibujar (Canvas canvas) {
         // EL orden importa
         if(inicializado) {
@@ -885,11 +861,12 @@ public class Nivel {
                 cofre.dibujar(canvas);
             }
 
-            jugador.dibujar(canvas);
 
             for(Enemigo enemigo : enemigos){
                 enemigo.dibujar(canvas);
             }
+
+            jugador.dibujar(canvas);
 
             if (nivelPausado){
                 // la foto mide 480x320
@@ -967,20 +944,18 @@ public class Nivel {
         Log.i("OLEADAS", " Tiempo para siguiente oleada: "  + msRestantesParaOleada);
         if(msRestantesParaOleada >0) {
             msRestantesParaOleada -= tiempo;
-            if(msRestantesParaOleada<=0){
-
-                if(oleadas.size()>0 && oleadas.get(ronda+1) != null) {
-                    if(spawns.size()<=0){
-                        Log.e("OLEADAS", " ## NO ES POSIBLE LANZAR OLEADAS SIN SPAWNS" );
-                    }else {
+            if(msRestantesParaOleada<=0) {
+                if (spawns.size() <= 0) {
+                    Log.e("OLEADAS", " ## NO ES POSIBLE LANZAR OLEADAS SIN SPAWNS");
+                } else {
+                    if (oleadas.size() > 0 && oleadas.get(oleadaActual + 1) != null) {
                         msTotalProximaOleada += 2000;  //Añadimos dos segundos mas al maximo para aumentar el espacio entre oleadas
-                        ronda++;
-                        Log.i("OLEADAS", " ----> Lanzando oleada: " + ronda);
+                        oleadaActual++;
+                        Log.i("OLEADAS", " ----> Lanzando oleada: " + oleadaActual);
                         //las dos variables siguientes son usadas para seleccionar el punto de respawn
                         int numeroSpawns = spawns.size() - 1;
                         int spawnSeleccionado = 0;
-                        for (Enemigo e : oleadas.get(ronda)) { //por cada enemigo de la oleada
-                            //Establecemos la x del spawn en direccion al jugador para evitar colision con tiles no pasables
+                        for (Enemigo e : oleadas.get(oleadaActual)) { //por cada enemigo de la oleada//Establecemos la x del spawn en direccion al jugador para evitar colision con tiles no pasables
                             if (jugador.x - spawns.get(spawnSeleccionado).x > 0)
                                 e.x = spawns.get(spawnSeleccionado).x + 15;
                             else
@@ -993,13 +968,36 @@ public class Nivel {
 
                             //añadimos el enemigo a la lista de enemigos para que sea dibujado
                             enemigos.add(e);
-                            Log.i("OLEADAS", " --& EnemigoZombie lanzado" );
+                            Log.i("OLEADAS", " --& Enemigo anzado");
                         }
                         //reiniciamos el tiempo para proxima oleada
                         msRestantesParaOleada = msTotalProximaOleada;
+
+                    }else if (!oleadas.containsKey(oleadaActual +1) && spawns.size() > 0) {
+                        msTotalProximaOleada += 2000;
+                        oleadaActual++;
+                        Log.i("OLEADAS", " ----> Lanzando oleada SIN CONFIGURAR: " + oleadaActual);
+                        int numeroSpawns = spawns.size() - 1;
+                        int spawnSeleccionado = 0;
+                        Random random = new Random();
+                        int n = random.nextInt(1 + oleadaActual);
+                        Enemigo e;
+                        for (int i = 0; i < n; i++) {
+                            e = new EnemigoZombie(context, 0, 0);
+                            if (jugador.x - spawns.get(spawnSeleccionado).x > 0)
+                                e.x = spawns.get(spawnSeleccionado).x + 15;
+                            else
+                                e.x = spawns.get(spawnSeleccionado).x - 15;
+                            e.y = spawns.get(spawnSeleccionado).y;
+
+                            spawnSeleccionado++;
+                            if (spawnSeleccionado > numeroSpawns) spawnSeleccionado = 0;
+                            enemigos.add(e);
+                        }
+
+                        msRestantesParaOleada = msTotalProximaOleada;
                     }
                 }
-
             }
         }
 
