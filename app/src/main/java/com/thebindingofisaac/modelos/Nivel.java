@@ -818,7 +818,7 @@ public class Nivel {
             disparoJugador.y += disparoJugador.velocidadY;
 
             for(BloqueDestructible o : destructibles){
-                if(disparoJugador.colisiona(o)){
+                if(disparoJugador.colisiona(o) && !o.destruido){
                     mapaTiles[o.xTile][o.yTile]= new Tile(CargadorGraficos.cargarDrawable(context, R.drawable.medievaltile_002),Tile.PASABLE);
                     o.destruir();
                     iterator.remove();
