@@ -9,8 +9,8 @@ import android.graphics.drawable.Drawable;
 public class Tile {
     public static final int PASABLE = 0;
     public static final int SOLIDO = 1;
-    public static final int NO_DESTRUIDO=2;
-    public static final int DESTRUIDO=3;
+    public static final int DESTRUIBLE =2;
+
 
     public int tipoDeColision; // PASABLE o SOLIDO
 
